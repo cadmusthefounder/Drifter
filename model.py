@@ -64,7 +64,7 @@ class Model:
         data = self._fill_nan(F, info)
         print('data.shape: {}'.format(data.shape))
 
-        probabilities = self._clf.predict_proba(data)
+        probabilities = self._clf.predict_proba(data)[:,1]
         print('probabilities.shape: {}'.format(probabilities.shape))
         return probabilities
   
