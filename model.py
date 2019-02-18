@@ -42,8 +42,8 @@ class Model:
         print('data.shape: {}'.format(data.shape))
         print('y.shape: {}'.format(y.shape))
 
-        self._training_data = np.concatenate((self._training_data, data), axis=0)
-        self._training_labels = np.concatenate((self._training_labels, y), axis=0)
+        self._training_data = data if len(self._training_data) == 0 else np.concatenate((self._training_data, data), axis=0)
+        self._training_labels = y if len(self._training_labels) == 0 else np.concatenate((self._training_labels, y), axis=0)
 
         print('self._training_data.shape: {}'.format(self._training_data.shape))
         print('self._training_labels.shape: {}'.format(self._training_labels.shape))
