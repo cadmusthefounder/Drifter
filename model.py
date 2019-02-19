@@ -81,7 +81,7 @@ class Model:
             d3 = d3[['WOE', 'IV']] 
             d3 = d3.replace([np.inf, -np.inf], 0)
             d3.IV = d3.IV.sum()
-            d3.set_index('X')
+            # d3.set_index('X')
             print('\nDataframe d3')
             print(d3)
 
