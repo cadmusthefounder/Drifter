@@ -121,7 +121,7 @@ class Model:
         skip = sorted(random.sample(range(total_training_data), total_training_data - remove_samples))
         
         self._training_data = self._training_data[skip,:]
-        self._training_labels = self._training_labels[skip,:]
+        self._training_labels = self._training_labels[skip:]
 
     def _extract(self, datainfo, timeinfo):
         time_budget = datainfo['time_budget']
