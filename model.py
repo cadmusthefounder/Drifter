@@ -64,7 +64,9 @@ class Model:
         print('data.shape: {}'.format(data.shape))
         print('y.shape: {}'.format(y.shape))
 
-        cat = pd.DataFrame({'X': F['CAT'].iloc[:,0], 'Y': y})
+
+        print(F['CAT'].dtypes.index)
+        cat = pd.DataFrame({'X': F['CAT'][0], 'Y': y})
         d3 = pd.DataFrame({},index=[])
         d3["COUNT"] = cat.count().Y
         d3["EVENT"] = cat.sum().y
