@@ -66,7 +66,8 @@ class Model:
 
         if info['no_of_categorical_features'] > 0:
             print(F['CAT'].dtypes.index)
-            cat = pd.DataFrame({'X': F['CAT']['6'], 'Y': y.ravel() }).groupby('X', as_index=True)
+            cat = pd.DataFrame({'X': F['CAT']['6'], 'Y': y.ravel() })
+            cat.set_index('X')
             print(cat)
             print(cat.count().Y)
             print(cat.sum().Y)
@@ -81,7 +82,7 @@ class Model:
             d3 = d3[['WOE', 'IV']] 
             d3 = d3.replace([np.inf, -np.inf], 0)
             d3.IV = d3.IV.sum()
-            d3 = d3.groupby('X', as_index=True)
+            d3.set_index('X')
             print('\nDataframe d3')
             print(d3)
 
