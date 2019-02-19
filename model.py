@@ -80,9 +80,9 @@ class Model:
             categorical_data = self._preprocess_categorical_data(F['CAT'], y)
             data = np.concatenate((data, categorical_data), axis=1)
 
-        # if info['no_of_mvc_features'] > 0:    
-        #     mvc_data = self._preprocess_mvc_data(F['MV'])
-        #     data = np.concatenate((data, mvc_data), axis=1)
+        if info['no_of_mvc_features'] > 0:    
+            mvc_data = self._preprocess_mvc_data(F['MV'], y)
+            data = np.concatenate((data, mvc_data), axis=1)
         
         print('data.shape: {}'.format(data.shape))
         print('y.shape: {}'.format(y.shape))
@@ -245,7 +245,7 @@ class Model:
         print('result.shape: {}'.format(result.shape)) 
         return result
  
-    def _preprocess_mvc_data(self, data):
+    def _preprocess_mvc_data(self, data, labels=None):
         print('\nPreprocessing mvc data')
         data = data.fillna('nan')
         print('data.shape: {}'.format(data.values.shape))
@@ -272,8 +272,8 @@ class Model:
                 self._mvc_count[i] = d2['COUNT'] if i not in self._mvc_count else self._mvc_count[i] + d2['COUNT'] 
                 self._mvc_event[i] = d2['EVENT'] if i not in self._mvc_event else self._mvc_event[i] + d2['EVENT']
 
-                d2['COUNT'] = self._categorical_count[i]
-                d2['EVENT'] = self._categorical_event[i]
+                d2['COUNT'] = self._mvc_count[i]
+                d2['EVENT'] = self._mvc_event[i]
                 d2['NONEVENT'] = d2.COUNT - d2.EVENT
                 d2['DIST_EVENT'] = d2.EVENT/d2.sum().EVENT
                 d2['DIST_NON_EVENT'] = d2.NONEVENT/d2.sum().NONEVENT
