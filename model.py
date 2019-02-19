@@ -66,7 +66,7 @@ class Model:
 
         if info['no_of_categorical_features'] > 0:
             print(F['CAT'].dtypes.index)
-            cat = pd.DataFrame({'X': F['CAT']['6'], 'Y': y })
+            cat = pd.DataFrame({'X': F['CAT']['6'], 'Y': y.ravel() })
             print(cat)
             d3 = pd.DataFrame({},index=[])
             d3["COUNT"] = cat.count().Y
