@@ -30,9 +30,9 @@ class Model:
         self._fixed_hyperparameters = {
             'learning_rate': 0.01, 
             'n_estimators': 600, 
-            'max_depth': 7, 
+            'max_depth': 12, 
             'num_leaves': 74, 
-            'max_bin': 93,
+            'max_bin': 150,
             'feature_fraction': 0.6174302253585068, 
             'bagging_fraction': 0.6454130699586444, 
             'bagging_freq': 5, 
@@ -42,9 +42,9 @@ class Model:
         }
         self._search_space = {
             'n_estimators': scope.int(hp.quniform('n_estimators', 500, 700, 25)), 
-            'max_depth': scope.int(hp.quniform('max_depth', 6, 8, 1)), 
+            'max_depth': scope.int(hp.quniform('max_depth', 7, 12, 1)), 
             'num_leaves': scope.int(hp.quniform('num_leaves', 70, 110, 2)), 
-            'max_bin': scope.int(hp.quniform('max_bin', 80, 110, 3)),
+            'max_bin': scope.int(hp.quniform('max_bin', 90, 180, 10)),
             'feature_fraction': hp.loguniform('feature_fraction', np.log(0.4), np.log(0.7)), 
             'bagging_fraction': hp.loguniform('bagging_fraction', np.log(0.4), np.log(0.7)), 
             'bagging_freq': scope.int(hp.quniform('bagging_freq', 4, 7, 1)), 
