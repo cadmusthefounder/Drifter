@@ -78,7 +78,6 @@ class Model:
             d3 = d3[['COUNT', 'EVENT', 'NONEVENT', 'DIST_EVENT','DIST_NON_EVENT','WOE']] 
             print('\nDataframe d3')
             print(d3)
-            print(d3.to_string())
 
         self._training_data = data if len(self._training_data) == 0 else np.concatenate((self._training_data, data), axis=0)
         self._training_labels = y if len(self._training_labels) == 0 else np.concatenate((self._training_labels, y), axis=0)
