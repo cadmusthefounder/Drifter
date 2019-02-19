@@ -47,7 +47,7 @@ class HyperparametersTuner:
         classifier = self._classifier_class()
         classifier.set_params(**trial_hyperparameters)
         classifier.fit(self._training_data, self._training_labels)
-        predictions = self._classifier.predict(data)
+        predictions = classifier.predict(data)
 
         print('self._training_labels.shape: {}'.format(self._training_labels.shape))
         print('predictions.shape: {}\n'.format(predictions.shape))
