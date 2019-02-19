@@ -206,7 +206,7 @@ class Model:
         if labels is None: # predict
             for i in indices:
                 d0 = pd.DataFrame({'X': data[i]})
-                d1 = d0.join(self._categorical_woe[i], on='X')[['COUNT', 'WOE', 'IV']].values
+                d1 = d0.join(self._categorical_woe[i], on='X')[['COUNT', 'WOE']].values
                 result = d1 if len(result) == 0 else np.concatenate((result, d1), axis=1)
 
                 del d0
@@ -256,7 +256,7 @@ class Model:
         if labels is None: # predict
             for i in indices:
                 d0 = pd.DataFrame({'X': data[i]})
-                d1 = d0.join(self._mvc_woe[i], on='X')[['COUNT', 'WOE', 'IV']].values
+                d1 = d0.join(self._mvc_woe[i], on='X')[['COUNT', 'WOE']].values
                 result = d1 if len(result) == 0 else np.concatenate((result, d1), axis=1)
 
                 del d0
