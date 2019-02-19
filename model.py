@@ -148,7 +148,7 @@ class Model:
 
             d3 = d0.join(d2, on='X')[['WOE', 'IV']].values
             print('d3.shape: {}'.format(d3.shape))
-            result.append(d3.T)
+            result = d3 if result == [] else np.concatenate((result, d3), axis=1)
             
             del d0
             del d1
