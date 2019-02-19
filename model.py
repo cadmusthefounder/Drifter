@@ -70,7 +70,7 @@ class Model:
             print(cat)
             d3 = pd.DataFrame({},index=[])
             d3["COUNT"] = cat.count().Y
-            d3["EVENT"] = cat.sum().y
+            d3["EVENT"] = cat.sum().Y
             d3["NONEVENT"] = count - event
             d3["DIST_EVENT"] = d3.EVENT/d3.sum().EVENT
             d3["DIST_NON_EVENT"] = d3.NONEVENT/d3.sum().NONEVENT
