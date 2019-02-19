@@ -59,38 +59,19 @@ class Model:
 
         info = self._extract(datainfo, timeinfo)
         self._print_time_info(info)
-        
-        data = self._fill_nan(F, info)
-        print('data.shape: {}'.format(data.shape))
-        print('y.shape: {}'.format(y.shape))
+
+        data = self._preprocess_time_and_numerical_data(F['numerical'])
 
         if info['no_of_categorical_features'] > 0:
-            print(F['CAT'].dtypes.index)
-            cat = pd.DataFrame({'X': F['CAT']['6'], 'Y': y.ravel()}).groupby('X',as_index=True)
-            print(cat)
-            print(cat.count().Y)
-            print(cat.sum().Y)
-            d3 = pd.DataFrame({},index=[])
-            d3['COUNT'] = cat.count().Y
-            d3['EVENT'] = cat.sum().Y
-            d3['NONEVENT'] = d3.COUNT - d3.EVENT
-            d3['DIST_EVENT'] = d3.EVENT/d3.sum().EVENT
-            d3['DIST_NON_EVENT'] = d3.NONEVENT/d3.sum().NONEVENT
-            d3['WOE'] = np.log(d3.DIST_EVENT/d3.DIST_NON_EVENT)
-            d3['IV'] = (d3.DIST_EVENT - d3.DIST_NON_EVENT) * d3.WOE
-            d3 = d3[['WOE', 'IV']] 
-            d3 = d3.replace([np.inf, -np.inf], 0)
-            d3.IV = d3.IV.sum()
-            print('\nDataframe d3')
-            print(d3)
+            categorical_data = self._preprocess_categorical_data(F['CAT'], y)
+            data = np.concatenate((data, categorical_data), axis=1)
 
-            cat = pd.DataFrame({'X': F['CAT']['6'], 'Y': y.ravel()})
-            # cat.set_index('X')
-
-            d4 = cat.join(d3, on='X')
-            print('\n Join d4')
-            print(d4)
-
+        # if info['no_of_mvc_features'] > 0:    
+        #     mvc_data = self._preprocess_mvc_data(F['MV'])
+        #     data = np.concatenate((data, mvc_data), axis=1)
+        
+        print('data.shape: {}'.format(data.shape))
+        print('y.shape: {}'.format(y.shape))
 
         self._training_data = data if len(self._training_data) == 0 else np.concatenate((self._training_data, data), axis=0)
         self._training_labels = y if len(self._training_labels) == 0 else np.concatenate((self._training_labels, y), axis=0)
@@ -138,6 +119,45 @@ class Model:
                 self = pickle.load(f)
             print("Model reloaded from: " + modelfile)
         return self
+
+    def _preprocess_time_and_numerical_data(self, data):
+        return np.nan_to_num(data)
+
+    def _preprocess_categorical_data(self, data, labels):
+        data = data.fillna('nan')
+
+        print('data.shape: {}'.format(data.values.shape))
+        indices = data.dtypes.index
+
+        result = []
+        for i in indices:
+            d0 = pd.DataFrame({'X': i, 'Y': labels.ravel()})
+            d1 = d0.groupby('X',as_index=True)
+            
+            d2 = pd.DataFrame({},index=[])
+            d2['COUNT'] = d1.count().Y
+            d2['EVENT'] = d1.sum().Y
+            d2['NONEVENT'] = d2.COUNT - d2.EVENT
+            d2['DIST_EVENT'] = d2.EVENT/d2.sum().EVENT
+            d2['DIST_NON_EVENT'] = d2.NONEVENT/d2.sum().NONEVENT
+            d2['WOE'] = np.log(d2.DIST_EVENT/d2.DIST_NON_EVENT)
+            d2['IV'] = (d2.DIST_EVENT - d2.DIST_NON_EVENT) * d2.WOE
+            d2 = d2[['WOE', 'IV']] 
+            d2 = d2.replace([np.inf, -np.inf], 0)
+            d2.IV = d2.IV.sum()
+
+            d3 = d0.join(d2, on='X')[['WOE', 'IV']].values
+            result.append(d3)
+            
+            del d0
+            del d1
+            del d2
+
+        print('result.shape: {}'.format(result.shape)) 
+        return result
+ 
+    def _preprocess_mvc_data(self, data):
+        data = data.fillna('nan')
 
     def _too_much_training_data(self):
         return len(self._training_data) > self._max_training_data
