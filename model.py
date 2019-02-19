@@ -66,8 +66,7 @@ class Model:
 
         if info['no_of_categorical_features'] > 0:
             print(F['CAT'].dtypes.index)
-            cat = pd.DataFrame({'X': F['CAT']['6'], 'Y': y.ravel() })
-            cat.set_index('X')
+            cat = pd.DataFrame({'X': F['CAT']['6'], 'Y': y.ravel() }).groupby('X',as_index=True)
             print(cat)
             print(cat.count().Y)
             print(cat.sum().Y)
