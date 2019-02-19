@@ -38,7 +38,12 @@ class HyperparametersTuner:
         best_trial_hyperparameters = space_eval(self._search_space, best)
         best_trial_hyperparameters_score = 1 - np.min([x['loss'] for x in trials.results])
 
-        return self._fixed_hyperparameters if fixed_hyperparameters_score > best_trial_hyperparameters_score else best_trial_hyperparameters
+        if fixed_hyperparameters_score > best_trial_hyperparameters_score:
+            print('best auc score: {}'.format(fixed_hyperparameters_score))
+            return self._fixed_hyperparameters
+        else:
+            print('best auc score: {}'.format(best_trial_hyperparameters_score))
+            return best_trial_hyperparameters
 
     def objective(self, trial_hyperparameters):
         print('\nTrial hyperparameters')
