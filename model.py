@@ -22,7 +22,7 @@ class Model:
         self._print_data_info(info)
         self._print_time_info(info)
         
-        self._max_training_data = 200000
+        self._max_training_data = 300000
         self._training_data = np.array([])
         self._training_labels = np.array([])
         self._classifier = None
@@ -45,8 +45,8 @@ class Model:
             'max_depth': scope.int(hp.quniform('max_depth', 5, 7, 1)), 
             'num_leaves': scope.int(hp.quniform('num_leaves', 70, 100, 2)), 
             'max_bin': scope.int(hp.quniform('max_bin', 70, 100, 3)),
-            'feature_fraction': hp.loguniform('feature_fraction', np.log(0.5), np.log(0.9)), 
-            'bagging_fraction': hp.loguniform('bagging_fraction', np.log(0.1), np.log(0.6)), 
+            'feature_fraction': hp.loguniform('feature_fraction', np.log(0.1), np.log(0.9)), 
+            'bagging_fraction': hp.loguniform('bagging_fraction', np.log(0.1), np.log(0.9)), 
             'bagging_freq': scope.int(hp.quniform('bagging_freq', 2, 5, 1)), 
             'boosting_type': 'gbdt', 
             'objective': 'binary',
@@ -66,7 +66,8 @@ class Model:
 
         if info['no_of_categorical_features'] > 0:
             print(F['CAT'].dtypes.index)
-            cat = pd.DataFrame({'X': F['CAT'][0], 'Y': y})
+            cat = pd.DataFrame({'X': F['CAT']['0'], 'Y': y })
+            print(cat)
             d3 = pd.DataFrame({},index=[])
             d3["COUNT"] = cat.count().Y
             d3["EVENT"] = cat.sum().y
