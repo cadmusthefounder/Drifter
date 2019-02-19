@@ -33,7 +33,7 @@ class Model:
             'max_depth': 11, 
             'num_leaves': 110, 
             'max_bin': 150,
-            'scale_pos_weight': 1,
+            'scale_pos_weight': 9.374066699376938,
             'feature_fraction': 0.6350762584583878, 
             'bagging_fraction': 0.6991186365033116, 
             'bagging_freq': 6, 
