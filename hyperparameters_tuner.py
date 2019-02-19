@@ -17,6 +17,7 @@ class HyperparametersTuner:
         # Try fixed hyperparameters
         classifier = self._classifier_class()
         classifier.set_params(**self._fixed_hyperparameters)
+        classifier.fit(self._training_data, self._training_labels)
         predictions = classifier.predict(data)
 
         print('\nFixed hyperparameters')
