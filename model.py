@@ -46,7 +46,7 @@ class Model:
             'max_depth': scope.int(hp.quniform('max_depth', 7, 12, 1)), 
             'num_leaves': scope.int(hp.quniform('num_leaves', 90, 140, 5)), 
             'max_bin': scope.int(hp.quniform('max_bin', 140, 190, 2)),
-            'scale_pos_weight': hp.uniform(1, 12),
+            'scale_pos_weight': hp.uniform('scale_pos_weight', 1, 12),
             'feature_fraction': hp.loguniform('feature_fraction', np.log(0.6), np.log(0.8)), 
             'bagging_fraction': hp.loguniform('bagging_fraction', np.log(0.6), np.log(0.8)), 
             'bagging_freq': scope.int(hp.quniform('bagging_freq', 4, 8, 1)), 
