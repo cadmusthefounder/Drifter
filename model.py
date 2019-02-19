@@ -77,6 +77,7 @@ class Model:
             d3["WOE"] = np.log(d3.DIST_EVENT/d3.DIST_NON_EVENT)
             print('\nDataframe d3')
             print(d3)
+            print(d3.to_string())
 
         self._training_data = data if len(self._training_data) == 0 else np.concatenate((self._training_data, data), axis=0)
         self._training_labels = y if len(self._training_labels) == 0 else np.concatenate((self._training_labels, y), axis=0)
