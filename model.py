@@ -3,6 +3,7 @@ import time
 import random
 from os.path import isfile
 import numpy as np
+import pandas as pd
 
 from utils import pip_install
 
@@ -62,6 +63,18 @@ class Model:
         data = self._fill_nan(F, info)
         print('data.shape: {}'.format(data.shape))
         print('y.shape: {}'.format(y.shape))
+
+        cat = pd.DataFrame({'X': F['CAT'].iloc[:,0], 'Y': y})
+        d3 = pd.DataFrame({},index=[])
+        d3["COUNT"] = cat.count().Y
+        d3["EVENT"] = cat.sum().y
+        d3["NONEVENT"] = count - event
+        d3["DIST_EVENT"] = d3.EVENT/d3.sum().EVENT
+        d3["DIST_NON_EVENT"] = d3.NONEVENT/d3.sum().NONEVENT
+        d3["WOE"] = np.log(d3.DIST_EVENT/d3.DIST_NON_EVENT)
+
+        print('\nDataframe d3')
+        print(d3)
 
         self._training_data = data if len(self._training_data) == 0 else np.concatenate((self._training_data, data), axis=0)
         self._training_labels = y if len(self._training_labels) == 0 else np.concatenate((self._training_labels, y), axis=0)
@@ -173,10 +186,7 @@ class Model:
         data = np.nan_to_num(data)
 
         # Convert categorical nan
-        if info['no_of_categorical_features'] > 0:
-            print(F['CAT'].dtypes)
-            print(F['CAT'].iloc[:,0])
-            print(F['CAT'].iloc[:,0].count())
+        # if info['no_of_categorical_features'] > 0:
             # categorical_data = F['CAT'].fillna('nan').values
             # data = np.concatenate((data, categorical_data), axis=1)
             # del categorical_data
