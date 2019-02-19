@@ -30,30 +30,34 @@ class Model:
         self._fixed_hyperparameters = {
             'learning_rate': 0.01, 
             'n_estimators': 600, 
-            'max_depth': 12, 
-            'num_leaves': 74, 
+            'max_depth': 11, 
+            'num_leaves': 110, 
             'max_bin': 150,
-            'feature_fraction': 0.6174302253585068, 
-            'bagging_fraction': 0.6454130699586444, 
-            'bagging_freq': 5, 
+            'scale_pos_weight': 1,
+            'feature_fraction': 0.6350762584583878, 
+            'bagging_fraction': 0.6991186365033116, 
+            'bagging_freq': 6, 
             'boosting_type': 'gbdt', 
             'objective': 'binary', 
-            'metric': 'auc' 
+            'metric': 'auc'
         }
         self._search_space = {
-            'n_estimators': scope.int(hp.quniform('n_estimators', 500, 700, 25)), 
+            'n_estimators': scope.int(hp.quniform('n_estimators', 500, 700, 10)), 
             'max_depth': scope.int(hp.quniform('max_depth', 7, 12, 1)), 
-            'num_leaves': scope.int(hp.quniform('num_leaves', 70, 110, 2)), 
-            'max_bin': scope.int(hp.quniform('max_bin', 90, 180, 10)),
-            'feature_fraction': hp.loguniform('feature_fraction', np.log(0.4), np.log(0.7)), 
-            'bagging_fraction': hp.loguniform('bagging_fraction', np.log(0.4), np.log(0.7)), 
-            'bagging_freq': scope.int(hp.quniform('bagging_freq', 4, 7, 1)), 
+            'num_leaves': scope.int(hp.quniform('num_leaves', 90, 140, 5)), 
+            'max_bin': scope.int(hp.quniform('max_bin', 140, 190, 2)),
+            'scale_pos_weight': hp.uniform(1, 12),
+            'feature_fraction': hp.loguniform('feature_fraction', np.log(0.6), np.log(0.8)), 
+            'bagging_fraction': hp.loguniform('bagging_fraction', np.log(0.6), np.log(0.8)), 
+            'bagging_freq': scope.int(hp.quniform('bagging_freq', 4, 8, 1)), 
             'boosting_type': 'gbdt', 
             'objective': 'binary',
             'metric': 'auc'
         }
         self._best_hyperparameters = None
         
+        self._categorical_count = {}
+        self._categorical_event = {}
         self._categorical_woe = {}
         self._time_map = {}
         for col_index in np.arange(info['time_starting_index'], info['numerical_starting_index']):
@@ -139,49 +143,51 @@ class Model:
         data = np.nan_to_num(data)
         print('data.shape: {}'.format(data.shape))
 
-        result = []
-        for col_index in np.arange(info['time_starting_index'], info['numerical_starting_index']):
-            date_col = data[:,col_index].astype(float)
-            non_zero_indices = np.nonzero(date_col)[0]
+        if info['no_of_time_features'] > 0:
 
-            if len(non_zero_indices) != 0:
-                if self._time_map[col_index] == 0:
-                    self._time_map[col_index] = np.min(date_col[non_zero_indices])
-                else:
-                    self._time_map[col_index] = np.min([self._time_map[col_index], \
-                                                        np.min(date_col[non_zero_indices])])
+            result = []
+            for col_index in np.arange(info['time_starting_index'], info['numerical_starting_index']):
+                date_col = data[:,col_index].astype(float)
+                non_zero_indices = np.nonzero(date_col)[0]
 
-            transformed_date_col = data[:,col_index].astype(float) - self._time_map[col_index]
-            result.append(transformed_date_col)
+                if len(non_zero_indices) != 0:
+                    if self._time_map[col_index] == 0:
+                        self._time_map[col_index] = np.min(date_col[non_zero_indices])
+                    else:
+                        self._time_map[col_index] = np.min([self._time_map[col_index], \
+                                                            np.min(date_col[non_zero_indices])])
+
+                transformed_date_col = data[:,col_index].astype(float) - self._time_map[col_index]
+                result.append(transformed_date_col)
+            
+            for i in range(info['no_of_time_features']):
+                for j in range(i+1, info['no_of_time_features']):
+                    if len(np.nonzero(data[:,i])) > 0 and len(np.nonzero(data[:,j])) > 0:
+                        result.append(data[:,i] - data[:,j])
+
+                dates = pd.DatetimeIndex(data[:,i])
+                dayofweek = dates.dayofweek.values
+                dayofyear = dates.dayofyear.values
+                month = dates.month.values
+                weekofyear = dates.weekofyear.values
+                day = dates.day.values
+                hour = dates.hour.values
+                minute = dates.minute.values
+                year = dates.year.values
+
+                result.append(dayofweek)
+                result.append(dayofyear)
+                result.append(month)
+                result.append(weekofyear)
+                result.append(year)
+                result.append(day)
+                result.append(hour)
+                result.append(minute)
+
+            result = np.array(result).T
+            print('result.shape: {}'.format(result.shape))
+            data = np.concatenate((result, data[:,info['numerical_starting_index']:]), axis=1)
         
-        for i in range(info['no_of_time_features']):
-            for j in range(i+1, info['no_of_time_features']):
-                if len(np.nonzero(data[:,i])) > 0 and len(np.nonzero(data[:,j])) > 0:
-                    result.append(data[:,i] - data[:,j])
-
-            dates = pd.DatetimeIndex(data[:,i])
-            dayofweek = dates.dayofweek.values
-            dayofyear = dates.dayofyear.values
-            month = dates.month.values
-            weekofyear = dates.weekofyear.values
-            day = dates.day.values
-            hour = dates.hour.values
-            minute = dates.minute.values
-            year = dates.year.values
-
-            result.append(dayofweek)
-            result.append(dayofyear)
-            result.append(month)
-            result.append(weekofyear)
-            result.append(year)
-            result.append(day)
-            result.append(hour)
-            result.append(minute)
-
-        result = np.array(result).T
-        print('result.shape: {}'.format(result.shape))
-
-        data = np.concatenate((result, data[:,info['numerical_starting_index']:]), axis=1)
         print('data.shape: {}'.format(data.shape))
         return data
 
@@ -195,7 +201,7 @@ class Model:
         if labels is None: # predict
             for i in indices:
                 d0 = pd.DataFrame({'X': data[i]})
-                d1 = d0.join(self._categorical_woe[i], on='X')[['WOE', 'IV']].values
+                d1 = d0.join(self._categorical_woe[i], on='X')[['COUNT', 'WOE', 'IV']].values
                 result = d1 if len(result) == 0 else np.concatenate((result, d1), axis=1)
 
                 del d0
@@ -208,17 +214,23 @@ class Model:
                 d2 = pd.DataFrame({},index=[])
                 d2['COUNT'] = d1.count().Y
                 d2['EVENT'] = d1.sum().Y
+
+                self._categorical_count[i] = d2['COUNT'] if not self._categorical_count else self._categorical_count[i] + d2['COUNT'] 
+                self._categorical_event[i] = d2['EVENT'] if not self._categorical_event else self._categorical_event[i] + d2['EVENT']
+
+                d2['COUNT'] = self._categorical_count[i]
+                d2['EVENT'] = self._categorical_event[i]
                 d2['NONEVENT'] = d2.COUNT - d2.EVENT
                 d2['DIST_EVENT'] = d2.EVENT/d2.sum().EVENT
                 d2['DIST_NON_EVENT'] = d2.NONEVENT/d2.sum().NONEVENT
                 d2['WOE'] = np.log(d2.DIST_EVENT/d2.DIST_NON_EVENT)
                 d2['IV'] = (d2.DIST_EVENT - d2.DIST_NON_EVENT) * d2.WOE
-                d2 = d2[['WOE', 'IV']] 
+                d2 = d2[['COUNT','WOE', 'IV']] 
                 d2 = d2.replace([np.inf, -np.inf], 0)
                 d2.IV = d2.IV.sum()
-                self._categorical_woe[i] = d2
 
-                d3 = d0.join(d2, on='X')[['WOE', 'IV']].values
+                self._categorical_woe[i] = d2
+                d3 = d0.join(d2, on='X')[['COUNT', 'WOE', 'IV']].values
                 result = d3 if len(result) == 0 else np.concatenate((result, d3), axis=1)
                 
                 del d0
