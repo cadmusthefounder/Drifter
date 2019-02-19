@@ -64,16 +64,16 @@ class Model:
         print('data.shape: {}'.format(data.shape))
         print('y.shape: {}'.format(y.shape))
 
-
-        print(F['CAT'].dtypes.index)
-        cat = pd.DataFrame({'X': F['CAT'][0], 'Y': y})
-        d3 = pd.DataFrame({},index=[])
-        d3["COUNT"] = cat.count().Y
-        d3["EVENT"] = cat.sum().y
-        d3["NONEVENT"] = count - event
-        d3["DIST_EVENT"] = d3.EVENT/d3.sum().EVENT
-        d3["DIST_NON_EVENT"] = d3.NONEVENT/d3.sum().NONEVENT
-        d3["WOE"] = np.log(d3.DIST_EVENT/d3.DIST_NON_EVENT)
+        if info['no_of_categorical_features'] > 0:
+            print(F['CAT'].dtypes.index)
+            cat = pd.DataFrame({'X': F['CAT'][0], 'Y': y})
+            d3 = pd.DataFrame({},index=[])
+            d3["COUNT"] = cat.count().Y
+            d3["EVENT"] = cat.sum().y
+            d3["NONEVENT"] = count - event
+            d3["DIST_EVENT"] = d3.EVENT/d3.sum().EVENT
+            d3["DIST_NON_EVENT"] = d3.NONEVENT/d3.sum().NONEVENT
+            d3["WOE"] = np.log(d3.DIST_EVENT/d3.DIST_NON_EVENT)
 
         print('\nDataframe d3')
         print(d3)
