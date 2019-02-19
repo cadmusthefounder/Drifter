@@ -79,6 +79,9 @@ class Model:
         if self._classifier is None or self._best_hyperparameters is None:
             tuner = HyperparametersTuner(self._classifier_class, self._fixed_hyperparameters, self._search_space)
             self._best_hyperparameters = tuner.get_best_hyperparameters(self._training_data, self._training_labels)
+
+            print('self._best_hyperparameters: {}'.format(self._best_hyperparameters))
+
             self._classifier = self._classifier_class()
             self._classifier.set_params(**self._best_hyperparameters)
         
