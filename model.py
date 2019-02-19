@@ -215,8 +215,8 @@ class Model:
                 d2['COUNT'] = d1.count().Y
                 d2['EVENT'] = d1.sum().Y
 
-                self._categorical_count[i] = d2['COUNT'] if not self._categorical_count else self._categorical_count[i] + d2['COUNT'] 
-                self._categorical_event[i] = d2['EVENT'] if not self._categorical_event else self._categorical_event[i] + d2['EVENT']
+                self._categorical_count[i] = d2['COUNT'] if i in self._categorical_count else self._categorical_count[i] + d2['COUNT'] 
+                self._categorical_event[i] = d2['EVENT'] if i in self._categorical_event else self._categorical_event[i] + d2['EVENT']
 
                 d2['COUNT'] = self._categorical_count[i]
                 d2['EVENT'] = self._categorical_event[i]
@@ -299,23 +299,3 @@ class Model:
     def _print_time_info(self, info):
         print('\nOverall time spent: {0:5.2f} seconds'.format(info['overall_time_spent']))
         print('Dataset time spent: {0:5.2f} seconds\n'.format(info['dataset_time_spent'])) 
-
-    def _fill_nan(self, F, info):
-        
-        # Convert time and numerical nan
-        data = F['numerical']
-        data = np.nan_to_num(data)
-
-        # Convert categorical nan
-        # if info['no_of_categorical_features'] > 0:
-            # categorical_data = F['CAT'].fillna('nan').values
-            # data = np.concatenate((data, categorical_data), axis=1)
-            # del categorical_data
-
-        # Convert mvc nan
-        # if info['no_of_mvc_features'] > 0:
-        #     mvc_data = F['MV'].fillna('nan').values
-        #     data = np.concatenate((data, mvc_data), axis=1)
-        #     del mvc_data
-        
-        return data
