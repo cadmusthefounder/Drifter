@@ -56,12 +56,17 @@ class Model:
         }
         self._best_hyperparameters = None
         
-        self._categorical_count = {}
-        self._categorical_event = {}
-        self._categorical_woe = {}
         self._time_map = {}
         for col_index in np.arange(info['time_starting_index'], info['numerical_starting_index']):
             self._time_map[col_index] = 0.0
+        
+        self._categorical_count = {}
+        self._categorical_event = {}
+        self._categorical_woe = {}
+
+        self._mvc_count = {}
+        self._mvc_event = {}
+        self._mvc_woe = {}
         
     def fit(self, F, y, datainfo, timeinfo):
         print('\nEntering fit function')
@@ -117,9 +122,9 @@ class Model:
             categorical_data = self._preprocess_categorical_data(F['CAT'])
             data = np.concatenate((data, categorical_data), axis=1)
 
-        # if info['no_of_mvc_features'] > 0:    
-        #     mvc_data = self._preprocess_mvc_data(F['MV'])
-        #     data = np.concatenate((data, mvc_data), axis=1)
+        if info['no_of_mvc_features'] > 0:    
+            mvc_data = self._preprocess_mvc_data(F['MV'])
+            data = np.concatenate((data, mvc_data), axis=1)
 
         print('data.shape: {}'.format(data.shape))
 
@@ -243,6 +248,51 @@ class Model:
     def _preprocess_mvc_data(self, data):
         print('\nPreprocessing mvc data')
         data = data.fillna('nan')
+        print('data.shape: {}'.format(data.values.shape))
+        indices = data.dtypes.index
+
+        result = []
+        if labels is None: # predict
+            for i in indices:
+                d0 = pd.DataFrame({'X': data[i]})
+                d1 = d0.join(self._mvc_woe[i], on='X')[['COUNT', 'WOE', 'IV']].values
+                result = d1 if len(result) == 0 else np.concatenate((result, d1), axis=1)
+
+                del d0
+            
+        else: # fit
+            for i in indices:
+                d0 = pd.DataFrame({'X': data[i], 'Y': labels.ravel()})
+                d1 = d0.groupby('X',as_index=True)
+                
+                d2 = pd.DataFrame({},index=[])
+                d2['COUNT'] = d1.count().Y
+                d2['EVENT'] = d1.sum().Y
+
+                self._mvc_count[i] = d2['COUNT'] if i not in self._mvc_count else self._mvc_count[i] + d2['COUNT'] 
+                self._mvc_event[i] = d2['EVENT'] if i not in self._mvc_event else self._mvc_event[i] + d2['EVENT']
+
+                d2['COUNT'] = self._categorical_count[i]
+                d2['EVENT'] = self._categorical_event[i]
+                d2['NONEVENT'] = d2.COUNT - d2.EVENT
+                d2['DIST_EVENT'] = d2.EVENT/d2.sum().EVENT
+                d2['DIST_NON_EVENT'] = d2.NONEVENT/d2.sum().NONEVENT
+                d2['WOE'] = np.log(d2.DIST_EVENT/d2.DIST_NON_EVENT)
+                d2['IV'] = (d2.DIST_EVENT - d2.DIST_NON_EVENT) * d2.WOE
+                d2 = d2[['COUNT','WOE', 'IV']] 
+                d2 = d2.replace([np.inf, -np.inf], 0)
+                d2.IV = d2.IV.sum()
+
+                self._mvc_woe[i] = d2
+                d3 = d0.join(d2, on='X')[['COUNT', 'WOE', 'IV']].values
+                result = d3 if len(result) == 0 else np.concatenate((result, d3), axis=1)
+                
+                del d0
+                del d1
+
+        result = np.array(result)
+        print('result.shape: {}'.format(result.shape)) 
+        return result
 
     def _too_much_training_data(self):
         return len(self._training_data) > self._max_training_data
