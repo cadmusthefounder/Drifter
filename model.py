@@ -69,12 +69,12 @@ class Model:
             cat = pd.DataFrame({'X': F['CAT']['6'], 'Y': y.ravel() })
             print(cat)
             d3 = pd.DataFrame({},index=[])
-            d3["COUNT"] = cat.count().Y
-            d3["EVENT"] = cat.sum().Y
-            d3["NONEVENT"] = d3.COUNT - d3.EVENT
-            d3["DIST_EVENT"] = d3.EVENT/d3.sum().EVENT
-            d3["DIST_NON_EVENT"] = d3.NONEVENT/d3.sum().NONEVENT
-            d3["WOE"] = np.log(d3.DIST_EVENT/d3.DIST_NON_EVENT)
+            d3['COUNT'] = cat.count().Y
+            d3['EVENT'] = cat.sum().Y
+            d3['NONEVENT'] = d3.COUNT - d3.EVENT
+            d3['DIST_EVENT'] = d3.EVENT/d3.sum().EVENT
+            d3['DIST_NON_EVENT'] = d3.NONEVENT/d3.sum().NONEVENT
+            d3['WOE'] = np.log(d3.DIST_EVENT/d3.DIST_NON_EVENT)
             d3 = d3[['COUNT', 'EVENT', 'NONEVENT', 'DIST_EVENT','DIST_NON_EVENT','WOE']] 
             d3 = d3.reset_index(drop=True)
             print('\nDataframe d3')
