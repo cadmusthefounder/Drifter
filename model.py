@@ -60,7 +60,6 @@ class Model:
         self._print_time_info(info)
         
         data = self._fill_nan(F, info)
-        y = y.ravel()
         print('data.shape: {}'.format(data.shape))
         print('y.shape: {}'.format(y.shape))
 
@@ -121,7 +120,7 @@ class Model:
         skip = sorted(random.sample(range(total_training_data), total_training_data - remove_samples))
         
         self._training_data = self._training_data[skip,:]
-        self._training_labels = self._training_labels[skip:]
+        self._training_labels = self._training_labels[skip,:]
 
     def _extract(self, datainfo, timeinfo):
         time_budget = datainfo['time_budget']
