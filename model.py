@@ -87,7 +87,7 @@ class Model:
             cat = pd.DataFrame({'X': F['CAT']['6'], 'Y': y.ravel()})
             # cat.set_index('X')
 
-            d4 = cat.join(d3, how='outer')
+            d4 = cat.join(d3, on='X')
             print('\n Join d4')
             print(d4)
 
