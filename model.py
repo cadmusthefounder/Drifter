@@ -29,31 +29,35 @@ class Model:
         self._classifier_class = LGBMClassifier
         self._fixed_hyperparameters = {
             'learning_rate': 0.01, 
-            'n_estimators': 500, 
+            'n_estimators': 600, 
             'max_depth': 7, 
-            'num_leaves': 84, 
-            'max_bin': 75,
-            'feature_fraction': 0.6564234953698808, 
-            'bagging_fraction': 0.38713947428926554, 
-            'bagging_freq': 4, 
+            'num_leaves': 74, 
+            'max_bin': 93,
+            'feature_fraction': 0.6174302253585068, 
+            'bagging_fraction': 0.6454130699586444, 
+            'bagging_freq': 5, 
             'boosting_type': 'gbdt', 
             'objective': 'binary', 
             'metric': 'auc' 
         }
         self._search_space = {
-            'n_estimators': scope.int(hp.quniform('n_estimators', 400, 600, 25)), 
-            'max_depth': scope.int(hp.quniform('max_depth', 5, 7, 1)), 
-            'num_leaves': scope.int(hp.quniform('num_leaves', 70, 100, 2)), 
-            'max_bin': scope.int(hp.quniform('max_bin', 70, 100, 3)),
-            'feature_fraction': hp.loguniform('feature_fraction', np.log(0.1), np.log(0.9)), 
-            'bagging_fraction': hp.loguniform('bagging_fraction', np.log(0.1), np.log(0.9)), 
-            'bagging_freq': scope.int(hp.quniform('bagging_freq', 2, 5, 1)), 
+            'n_estimators': scope.int(hp.quniform('n_estimators', 500, 700, 25)), 
+            'max_depth': scope.int(hp.quniform('max_depth', 6, 8, 1)), 
+            'num_leaves': scope.int(hp.quniform('num_leaves', 70, 110, 2)), 
+            'max_bin': scope.int(hp.quniform('max_bin', 80, 110, 3)),
+            'feature_fraction': hp.loguniform('feature_fraction', np.log(0.4), np.log(0.7)), 
+            'bagging_fraction': hp.loguniform('bagging_fraction', np.log(0.4), np.log(0.7)), 
+            'bagging_freq': scope.int(hp.quniform('bagging_freq', 4, 7, 1)), 
             'boosting_type': 'gbdt', 
             'objective': 'binary',
             'metric': 'auc'
         }
         self._best_hyperparameters = None
+        
         self._categorical_woe = {}
+        self._time_map = {}
+        for col_index in np.arange(info['time_starting_index'], info['numerical_starting_index']):
+            self._time_map[col_index] = 0.0
         
     def fit(self, F, y, datainfo, timeinfo):
         print('\nEntering fit function')
@@ -61,7 +65,7 @@ class Model:
         info = self._extract(datainfo, timeinfo)
         self._print_time_info(info)
 
-        data = self._preprocess_time_and_numerical_data(F['numerical'])
+        data = self._preprocess_time_and_numerical_data(F['numerical'], info)
 
         if info['no_of_categorical_features'] > 0:
             categorical_data = self._preprocess_categorical_data(F['CAT'], y)
@@ -103,7 +107,7 @@ class Model:
         info = self._extract(datainfo, timeinfo)
         self._print_time_info(info)
 
-        data = self._preprocess_time_and_numerical_data(F['numerical'])
+        data = self._preprocess_time_and_numerical_data(F['numerical'], info)
 
         if info['no_of_categorical_features'] > 0:
             categorical_data = self._preprocess_categorical_data(F['CAT'])
@@ -130,9 +134,56 @@ class Model:
             print("Model reloaded from: " + modelfile)
         return self
 
-    def _preprocess_time_and_numerical_data(self, data):
+    def _preprocess_time_and_numerical_data(self, data, info):
         print('\nPreprocessing time and numerical data')
-        return np.nan_to_num(data)
+        data = np.nan_to_num(data)
+        print('data.shape: {}'.format(data.shape))
+
+        result = []
+        for col_index in np.arange(info['time_starting_index'], info['numerical_starting_index']):
+            date_col = data[:,col_index].astype(float)
+            non_zero_indices = np.nonzero(date_col)[0]
+
+            if len(non_zero_indices) != 0:
+                if self._time_map[col_index] == 0:
+                    self._time_map[col_index] = np.min(date_col[non_zero_indices])
+                else:
+                    self._time_map[col_index] = np.min([self._time_map[col_index], \
+                                                        np.min(date_col[non_zero_indices])])
+
+            transformed_date_col = data[:,col_index].astype(float) - self._time_map[col_index]
+            result.append(transformed_date_col)
+        
+        for i in range(info['no_of_time_features']):
+            for j in range(i+1, info['no_of_time_features']):
+                if len(np.nonzero(data[:,i])) > 0 and len(np.nonzero(data[:,j])) > 0:
+                    result.append(data[:,i] - data[:,j])
+
+            dates = pd.DatetimeIndex(data[:,i])
+            dayofweek = dates.dayofweek.values
+            dayofyear = dates.dayofyear.values
+            month = dates.month.values
+            weekofyear = dates.weekofyear.values
+            day = dates.day.values
+            hour = dates.hour.values
+            minute = dates.minute.values
+            year = dates.year.values
+
+            result.append(dayofweek)
+            result.append(dayofyear)
+            result.append(month)
+            result.append(weekofyear)
+            result.append(year)
+            result.append(day)
+            result.append(hour)
+            result.append(minute)
+
+        result = np.array(result).T
+        print('result.shape: {}'.format(result.shape))
+
+        data = np.concatenate((result, data[,info['numerical_starting_index']:]), axis=1)
+        print('data.shape: {}'.format(data.shape))
+        return data
 
     def _preprocess_categorical_data(self, data, labels=None):
         print('\nPreprocessing categorical data')
@@ -145,7 +196,7 @@ class Model:
             for i in indices:
                 d0 = pd.DataFrame({'X': data[i]})
                 d1 = d0.join(self._categorical_woe[i], on='X')[['WOE', 'IV']].values
-                result = d1 if result == [] else np.concatenate((result, d1), axis=1)
+                result = d1 if len(result) == 0 else np.concatenate((result, d1), axis=1)
 
                 del d0
             
@@ -168,7 +219,7 @@ class Model:
                 self._categorical_woe[i] = d2
 
                 d3 = d0.join(d2, on='X')[['WOE', 'IV']].values
-                result = d3 if result == [] else np.concatenate((result, d3), axis=1)
+                result = d3 if len(result) == 0 else np.concatenate((result, d3), axis=1)
                 
                 del d0
                 del d1
