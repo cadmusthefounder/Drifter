@@ -215,8 +215,8 @@ class Model:
                 d2['COUNT'] = d1.count().Y
                 d2['EVENT'] = d1.sum().Y
 
-                self._categorical_count[i] = d2['COUNT'] if i in self._categorical_count else self._categorical_count[i] + d2['COUNT'] 
-                self._categorical_event[i] = d2['EVENT'] if i in self._categorical_event else self._categorical_event[i] + d2['EVENT']
+                self._categorical_count[i] = d2['COUNT'] if i not in self._categorical_count else self._categorical_count[i] + d2['COUNT'] 
+                self._categorical_event[i] = d2['EVENT'] if i not in self._categorical_event else self._categorical_event[i] + d2['EVENT']
 
                 d2['COUNT'] = self._categorical_count[i]
                 d2['EVENT'] = self._categorical_event[i]
