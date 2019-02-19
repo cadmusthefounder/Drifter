@@ -147,13 +147,14 @@ class Model:
             d2.IV = d2.IV.sum()
 
             d3 = d0.join(d2, on='X')[['WOE', 'IV']].values
-            result.append(d3)
+            print('d3.shape: {}'.format(d3.shape))
+            result.append(d3.T)
             
             del d0
             del d1
             del d2
 
-        result = np.array(result).T
+        result = np.array(result)
         print('result.shape: {}'.format(result.shape)) 
         return result
  
