@@ -41,12 +41,14 @@ class HyperparametersTuner:
         return self._fixed_hyperparameters if fixed_hyperparameters_score > best_trial_hyperparameters_score else best_trial_hyperparameters
 
     def objective(self, trial_hyperparameters):
+        print('\nTrial hyperparameters')
+        print('trial_hyperparameters: {}'.format(trial_hyperparameters))
+
         classifier = self._classifier_class()
         classifier.set_params(**trial_hyperparameters)
         classifier.fit(self._training_data, self._training_labels)
         predictions = self._classifier.predict(data)
 
-        print('\nTrial hyperparameters')
         print('self._training_labels.shape: {}'.format(self._training_labels.shape))
         print('predictions.shape: {}\n'.format(predictions.shape))
         

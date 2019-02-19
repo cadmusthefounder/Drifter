@@ -44,8 +44,8 @@ class Model:
             'max_depth': scope.int(hp.quniform('max_depth', 5, 7, 1)), 
             'num_leaves': scope.int(hp.quniform('num_leaves', 30, 90, 4)), 
             'max_bin': scope.int(hp.quniform('max_bin', 60, 100, 5)),
-            'feature_fraction': hp.loguniform('feature_fraction', 0.2, 0.8), 
-            'bagging_fraction': hp.loguniform('bagging_fraction', 0.2, 0.8), 
+            'feature_fraction': hp.loguniform('feature_fraction', np.log(0.2), np.log(0.8)), 
+            'bagging_fraction': hp.loguniform('bagging_fraction', np.log(0.2), np.log(0.8)), 
             'bagging_freq': scope.int(hp.quniform('bagging_freq', 2, 5, 1)), 
             'boosting_type': 'gbdt', 
             'objective': 'binary',
@@ -60,6 +60,7 @@ class Model:
         self._print_time_info(info)
         
         data = self._fill_nan(F, info)
+        y = y.ravel()
         print('data.shape: {}'.format(data.shape))
         print('y.shape: {}'.format(y.shape))
 
