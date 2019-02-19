@@ -153,6 +153,7 @@ class Model:
             del d1
             del d2
 
+        result = np.array(result).T
         print('result.shape: {}'.format(result.shape)) 
         return result
  
