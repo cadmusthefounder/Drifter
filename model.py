@@ -78,7 +78,7 @@ class Model:
             d3['DIST_NON_EVENT'] = d3.NONEVENT/d3.sum().NONEVENT
             d3['WOE'] = np.log(d3.DIST_EVENT/d3.DIST_NON_EVENT)
             d3['IV'] = (d3.DIST_EVENT - d3.DIST_NON_EVENT) * d3.WOE
-            d3 = d3[['COUNT', 'EVENT', 'NONEVENT', 'DIST_EVENT','DIST_NON_EVENT','WOE']] 
+            # d3 = d3[['COUNT', 'EVENT', 'NONEVENT', 'DIST_EVENT','DIST_NON_EVENT','WOE', 'IV']] 
             d3 = d3.replace([np.inf, -np.inf], 0)
             d3.IV = d3.IV.sum()
             d3 = d3.reset_index(drop=False)
