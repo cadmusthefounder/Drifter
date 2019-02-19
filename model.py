@@ -22,34 +22,34 @@ class Model:
         self._print_data_info(info)
         self._print_time_info(info)
         
-        self._max_training_data = 300000
+        self._max_training_data = 400000
         self._training_data = np.array([])
         self._training_labels = np.array([])
         self._classifier = None
         self._classifier_class = LGBMClassifier
         self._fixed_hyperparameters = {
             'learning_rate': 0.01, 
-            'n_estimators': 600, 
-            'max_depth': 11, 
-            'num_leaves': 110, 
-            'max_bin': 150,
-            'scale_pos_weight': 9.374066699376938,
-            'feature_fraction': 0.6350762584583878, 
-            'bagging_fraction': 0.6991186365033116, 
-            'bagging_freq': 6, 
+            'n_estimators': 640, 
+            'max_depth': 12, 
+            'num_leaves': 140, 
+            'max_bin': 168,
+            'scale_pos_weight': 7.602983752946359,
+            'feature_fraction': 0.7821462480234015, 
+            'bagging_fraction': 0.770946475935258, 
+            'bagging_freq': 8, 
             'boosting_type': 'gbdt', 
             'objective': 'binary', 
             'metric': 'auc'
         }
         self._search_space = {
             'n_estimators': scope.int(hp.quniform('n_estimators', 500, 700, 10)), 
-            'max_depth': scope.int(hp.quniform('max_depth', 7, 12, 1)), 
-            'num_leaves': scope.int(hp.quniform('num_leaves', 90, 140, 5)), 
-            'max_bin': scope.int(hp.quniform('max_bin', 140, 190, 2)),
+            'max_depth': scope.int(hp.quniform('max_depth', 7, 14, 1)), 
+            'num_leaves': scope.int(hp.quniform('num_leaves', 120, 160, 5)), 
+            'max_bin': scope.int(hp.quniform('max_bin', 140, 190, 8)),
             'scale_pos_weight': hp.uniform('scale_pos_weight', 1, 12),
-            'feature_fraction': hp.loguniform('feature_fraction', np.log(0.6), np.log(0.8)), 
-            'bagging_fraction': hp.loguniform('bagging_fraction', np.log(0.6), np.log(0.8)), 
-            'bagging_freq': scope.int(hp.quniform('bagging_freq', 4, 8, 1)), 
+            'feature_fraction': hp.loguniform('feature_fraction', np.log(0.6), np.log(0.9)), 
+            'bagging_fraction': hp.loguniform('bagging_fraction', np.log(0.6), np.log(0.9)), 
+            'bagging_freq': scope.int(hp.quniform('bagging_freq', 4, 10, 1)), 
             'boosting_type': 'gbdt', 
             'objective': 'binary',
             'metric': 'auc'
@@ -108,7 +108,7 @@ class Model:
             self._classifier = self._classifier_class()
             self._classifier.set_params(**self._best_hyperparameters)
         
-        self._classifier.fit(self._training_data, self._training_labels)
+        self._classifier.fit(self._training_data, self._training_labels.ravel())
 
     def predict(self, F, datainfo, timeinfo):
         print('\nEntering predict function')
@@ -229,13 +229,14 @@ class Model:
                 d2['DIST_EVENT'] = d2.EVENT/d2.sum().EVENT
                 d2['DIST_NON_EVENT'] = d2.NONEVENT/d2.sum().NONEVENT
                 d2['WOE'] = np.log(d2.DIST_EVENT/d2.DIST_NON_EVENT)
-                d2['IV'] = (d2.DIST_EVENT - d2.DIST_NON_EVENT) * d2.WOE
-                d2 = d2[['COUNT','WOE', 'IV']] 
+                # d2['IV'] = (d2.DIST_EVENT - d2.DIST_NON_EVENT) * d2.WOE
+                d2 = d2[['COUNT','WOE']] 
                 d2 = d2.replace([np.inf, -np.inf], 0)
-                d2.IV = d2.IV.sum()
+                # d2.IV = d2.IV.sum()
 
                 self._categorical_woe[i] = d2
-                d3 = d0.join(d2, on='X')[['COUNT', 'WOE', 'IV']].values
+                d3 = d0.join(d2, on='X')[['COUNT', 'WOE']].values
+                # d3 = d0.join(d2, on='X')[['COUNT', 'WOE', 'IV']].values
                 result = d3 if len(result) == 0 else np.concatenate((result, d3), axis=1)
                 
                 del d0
@@ -278,13 +279,14 @@ class Model:
                 d2['DIST_EVENT'] = d2.EVENT/d2.sum().EVENT
                 d2['DIST_NON_EVENT'] = d2.NONEVENT/d2.sum().NONEVENT
                 d2['WOE'] = np.log(d2.DIST_EVENT/d2.DIST_NON_EVENT)
-                d2['IV'] = (d2.DIST_EVENT - d2.DIST_NON_EVENT) * d2.WOE
-                d2 = d2[['COUNT','WOE', 'IV']] 
+                # d2['IV'] = (d2.DIST_EVENT - d2.DIST_NON_EVENT) * d2.WOE
+                d2 = d2[['COUNT','WOE']] 
                 d2 = d2.replace([np.inf, -np.inf], 0)
-                d2.IV = d2.IV.sum()
+                # d2.IV = d2.IV.sum()
 
                 self._mvc_woe[i] = d2
-                d3 = d0.join(d2, on='X')[['COUNT', 'WOE', 'IV']].values
+                d3 = d0.join(d2, on='X')[['COUNT', 'WOE']].values
+                # d3 = d0.join(d2, on='X')[['COUNT', 'WOE', 'IV']].values
                 result = d3 if len(result) == 0 else np.concatenate((result, d3), axis=1)
                 
                 del d0
