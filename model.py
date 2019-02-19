@@ -106,13 +106,13 @@ class Model:
         data = self._preprocess_time_and_numerical_data(F['numerical'])
 
         if info['no_of_categorical_features'] > 0:
-            categorical_data = self._preprocess_categorical_data(F['CAT'], y)
+            categorical_data = self._preprocess_categorical_data(F['CAT'])
             data = np.concatenate((data, categorical_data), axis=1)
 
         # if info['no_of_mvc_features'] > 0:    
         #     mvc_data = self._preprocess_mvc_data(F['MV'])
         #     data = np.concatenate((data, mvc_data), axis=1)
-        
+
         print('data.shape: {}'.format(data.shape))
 
         probabilities = self._classifier.predict_proba(data)[:,1]
