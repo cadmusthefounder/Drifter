@@ -4,7 +4,7 @@ from hyperopt import fmin, tpe, space_eval, STATUS_OK, Trials
 
 class HyperparametersTuner:
 
-    def __init__(self, classifier_class, fixed_hyperparameters, search_space, max_evaluations=50):
+    def __init__(self, classifier_class, fixed_hyperparameters, search_space, max_evaluations=40):
         self._classifier_class = classifier_class
         self._fixed_hyperparameters = fixed_hyperparameters
         self._search_space = search_space

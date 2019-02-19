@@ -28,24 +28,24 @@ class Model:
         self._classifier_class = LGBMClassifier
         self._fixed_hyperparameters = {
             'learning_rate': 0.01, 
-            'n_estimators': 400, 
+            'n_estimators': 500, 
             'max_depth': 7, 
-            'num_leaves': 50, 
-            'max_bin': 63,
-            'feature_fraction': 0.6, 
-            'bagging_fraction': 0.6, 
-            'bagging_freq': 3, 
+            'num_leaves': 84, 
+            'max_bin': 75,
+            'feature_fraction': 0.6564234953698808, 
+            'bagging_fraction': 0.38713947428926554, 
+            'bagging_freq': 4, 
             'boosting_type': 'gbdt', 
             'objective': 'binary', 
             'metric': 'auc' 
         }
         self._search_space = {
-            'n_estimators': scope.int(hp.quniform('n_estimators', 200, 500, 50)), 
+            'n_estimators': scope.int(hp.quniform('n_estimators', 400, 600, 25)), 
             'max_depth': scope.int(hp.quniform('max_depth', 5, 7, 1)), 
-            'num_leaves': scope.int(hp.quniform('num_leaves', 30, 90, 4)), 
-            'max_bin': scope.int(hp.quniform('max_bin', 60, 100, 5)),
-            'feature_fraction': hp.loguniform('feature_fraction', np.log(0.2), np.log(0.8)), 
-            'bagging_fraction': hp.loguniform('bagging_fraction', np.log(0.2), np.log(0.8)), 
+            'num_leaves': scope.int(hp.quniform('num_leaves', 70, 100, 2)), 
+            'max_bin': scope.int(hp.quniform('max_bin', 70, 100, 3)),
+            'feature_fraction': hp.loguniform('feature_fraction', np.log(0.5), np.log(0.9)), 
+            'bagging_fraction': hp.loguniform('bagging_fraction', np.log(0.1), np.log(0.6)), 
             'bagging_freq': scope.int(hp.quniform('bagging_freq', 2, 5, 1)), 
             'boosting_type': 'gbdt', 
             'objective': 'binary',
@@ -156,7 +156,7 @@ class Model:
         }
 
     def _print_data_info(self, info):
-        print('\nDataset budget: {0:d} seconds'.format(info['time_budget']))
+        print('\nDataset budget: {0:f} seconds'.format(info['time_budget']))
         print('No. of time features: {0:d}'.format(info['no_of_time_features']))
         print('No. of numerical features: {0:d}'.format(info['no_of_numerical_features']))
         print('No. of categorical features: {0:d}'.format(info['no_of_categorical_features']))
