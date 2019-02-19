@@ -11,6 +11,7 @@ pip_install('lightgbm')
 
 from lightgbm import LGBMClassifier
 from hyperopt import hp
+from hyperopt.pyll.base import scope
 from hyperparameters_tuner import HyperparametersTuner
 
 class Model:
@@ -39,13 +40,13 @@ class Model:
             'metric': 'auc' 
         }
         self._search_space = {
-            'n_estimators': int(hp.quniform('n_estimators', 200, 500, 50)), 
-            'max_depth': int(hp.quniform('max_depth', 5, 7, 1)), 
-            'num_leaves': int(hp.quniform('num_leaves', 30, 90, 4)), 
-            'max_bin': int(hp.quniform('max_bin', 60, 100, 5)),
+            'n_estimators': scope.int(hp.quniform('n_estimators', 200, 500, 50)), 
+            'max_depth': scope.int(hp.quniform('max_depth', 5, 7, 1)), 
+            'num_leaves': scope.int(hp.quniform('num_leaves', 30, 90, 4)), 
+            'max_bin': scope.int(hp.quniform('max_bin', 60, 100, 5)),
             'feature_fraction': hp.loguniform('feature_fraction', 0.2, 0.8), 
             'bagging_fraction': hp.loguniform('bagging_fraction', 0.2, 0.8), 
-            'bagging_freq': int(hp.quniform('bagging_freq', 2, 5, 1)), 
+            'bagging_freq': scope.int(hp.quniform('bagging_freq', 2, 5, 1)), 
             'boosting_type': 'gbdt', 
             'objective': 'binary',
             'metric': 'auc'
