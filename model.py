@@ -68,6 +68,8 @@ class Model:
             print(F['CAT'].dtypes.index)
             cat = pd.DataFrame({'X': F['CAT']['6'], 'Y': y.ravel() })
             print(cat)
+            print(cat.count().Y)
+            print(cat.sum().Y)
             d3 = pd.DataFrame({},index=[])
             d3['COUNT'] = cat.count().Y
             d3['EVENT'] = cat.sum().Y
