@@ -68,6 +68,7 @@ class Model:
             print(F['CAT'].dtypes.index)
             cat = pd.DataFrame({'X': F['CAT']['6'], 'Y': y.ravel() }).groupby('X',as_index=True)
             print(cat)
+            print(cat.index.values)
             print(cat.count().Y)
             print(cat.sum().Y)
             d3 = pd.DataFrame({},index=[])
@@ -84,6 +85,7 @@ class Model:
             # d3.set_index('X')
             print('\nDataframe d3')
             print(d3)
+            print(d3.index.values)
 
             d4 = cat.join(d3, how='outer')
             print('\n Join d4')
