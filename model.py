@@ -66,7 +66,7 @@ class Model:
 
         if info['no_of_categorical_features'] > 0:
             print(F['CAT'].dtypes.index)
-            cat = pd.DataFrame({'X': F['CAT']['6'], 'Y': y.ravel() }).groupby('X',as_index=True)
+            cat = pd.DataFrame({'X': F['CAT']['6'], 'Y': y.ravel() }).groupby('X', as_index=True)
             print(cat)
             print(cat.count().Y)
             print(cat.sum().Y)
@@ -77,13 +77,17 @@ class Model:
             d3['DIST_EVENT'] = d3.EVENT/d3.sum().EVENT
             d3['DIST_NON_EVENT'] = d3.NONEVENT/d3.sum().NONEVENT
             d3['WOE'] = np.log(d3.DIST_EVENT/d3.DIST_NON_EVENT)
-            d3['IV'] = (d3.DIST_EVENT - d3.DIST_NON_EVENT) * np.log(d3.DIST_EVENT / d3.DIST_NON_EVENT)
-            d3 = d3[['COUNT', 'EVENT', 'NONEVENT', 'DIST_EVENT','DIST_NON_EVENT','WOE', 'IV']] 
+            d3['IV'] = (d3.DIST_EVENT - d3.DIST_NON_EVENT) * d3.WOE
+            d3 = d3[['WOE', 'IV']] 
             d3 = d3.replace([np.inf, -np.inf], 0)
             d3.IV = d3.IV.sum()
-            d3 = d3.reset_index(drop=False)
             print('\nDataframe d3')
             print(d3)
+
+            d4 = cat.join(d3, how='outer')
+            print('\n Join d4')
+            print(d4)
+
 
         self._training_data = data if len(self._training_data) == 0 else np.concatenate((self._training_data, data), axis=0)
         self._training_labels = y if len(self._training_labels) == 0 else np.concatenate((self._training_labels, y), axis=0)
