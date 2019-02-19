@@ -53,6 +53,7 @@ class Model:
             'metric': 'auc'
         }
         self._best_hyperparameters = None
+        self._categorical_woe = {}
         
     def fit(self, F, y, datainfo, timeinfo):
         print('\nEntering fit function')
@@ -102,7 +103,16 @@ class Model:
         info = self._extract(datainfo, timeinfo)
         self._print_time_info(info)
 
-        data = self._fill_nan(F, info)
+        data = self._preprocess_time_and_numerical_data(F['numerical'])
+
+        if info['no_of_categorical_features'] > 0:
+            categorical_data = self._preprocess_categorical_data(F['CAT'], y)
+            data = np.concatenate((data, categorical_data), axis=1)
+
+        # if info['no_of_mvc_features'] > 0:    
+        #     mvc_data = self._preprocess_mvc_data(F['MV'])
+        #     data = np.concatenate((data, mvc_data), axis=1)
+        
         print('data.shape: {}'.format(data.shape))
 
         probabilities = self._classifier.predict_proba(data)[:,1]
@@ -121,44 +131,54 @@ class Model:
         return self
 
     def _preprocess_time_and_numerical_data(self, data):
+        print('\nPreprocessing time and numerical data')
         return np.nan_to_num(data)
 
-    def _preprocess_categorical_data(self, data, labels):
+    def _preprocess_categorical_data(self, data, labels=None):
+        print('\nPreprocessing categorical data')
         data = data.fillna('nan')
-
         print('data.shape: {}'.format(data.values.shape))
         indices = data.dtypes.index
 
         result = []
-        for i in indices:
-            d0 = pd.DataFrame({'X': i, 'Y': labels.ravel()})
-            d1 = d0.groupby('X',as_index=True)
-            
-            d2 = pd.DataFrame({},index=[])
-            d2['COUNT'] = d1.count().Y
-            d2['EVENT'] = d1.sum().Y
-            d2['NONEVENT'] = d2.COUNT - d2.EVENT
-            d2['DIST_EVENT'] = d2.EVENT/d2.sum().EVENT
-            d2['DIST_NON_EVENT'] = d2.NONEVENT/d2.sum().NONEVENT
-            d2['WOE'] = np.log(d2.DIST_EVENT/d2.DIST_NON_EVENT)
-            d2['IV'] = (d2.DIST_EVENT - d2.DIST_NON_EVENT) * d2.WOE
-            d2 = d2[['WOE', 'IV']] 
-            d2 = d2.replace([np.inf, -np.inf], 0)
-            d2.IV = d2.IV.sum()
+        if labels is None: # predict
+            for i in indices:
+                d0 = pd.DataFrame({'X': data[i]})
+                d1 = d0.join(self._categorical_woe[i], on='X')[['WOE', 'IV']].values
+                result = d1 if result == [] else np.concatenate((result, d1), axis=1)
 
-            d3 = d0.join(d2, on='X')[['WOE', 'IV']].values
-            print('d3.shape: {}'.format(d3.shape))
-            result = d3 if result == [] else np.concatenate((result, d3), axis=1)
+                del d0
             
-            del d0
-            del d1
-            del d2
+        else: # fit
+            for i in indices:
+                d0 = pd.DataFrame({'X': data[i], 'Y': labels.ravel()})
+                d1 = d0.groupby('X',as_index=True)
+                
+                d2 = pd.DataFrame({},index=[])
+                d2['COUNT'] = d1.count().Y
+                d2['EVENT'] = d1.sum().Y
+                d2['NONEVENT'] = d2.COUNT - d2.EVENT
+                d2['DIST_EVENT'] = d2.EVENT/d2.sum().EVENT
+                d2['DIST_NON_EVENT'] = d2.NONEVENT/d2.sum().NONEVENT
+                d2['WOE'] = np.log(d2.DIST_EVENT/d2.DIST_NON_EVENT)
+                d2['IV'] = (d2.DIST_EVENT - d2.DIST_NON_EVENT) * d2.WOE
+                d2 = d2[['WOE', 'IV']] 
+                d2 = d2.replace([np.inf, -np.inf], 0)
+                d2.IV = d2.IV.sum()
+                self._categorical_woe[i] = d2
+
+                d3 = d0.join(d2, on='X')[['WOE', 'IV']].values
+                result = d3 if result == [] else np.concatenate((result, d3), axis=1)
+                
+                del d0
+                del d1
 
         result = np.array(result)
         print('result.shape: {}'.format(result.shape)) 
         return result
  
     def _preprocess_mvc_data(self, data):
+        print('\nPreprocessing mvc data')
         data = data.fillna('nan')
 
     def _too_much_training_data(self):
