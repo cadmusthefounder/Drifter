@@ -81,6 +81,7 @@ class Model:
             d3 = d3[['WOE', 'IV']] 
             d3 = d3.replace([np.inf, -np.inf], 0)
             d3.IV = d3.IV.sum()
+            d3 = d3..groupby('X', as_index=True)
             print('\nDataframe d3')
             print(d3)
 
