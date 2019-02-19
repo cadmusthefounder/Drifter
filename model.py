@@ -75,6 +75,7 @@ class Model:
             d3["DIST_EVENT"] = d3.EVENT/d3.sum().EVENT
             d3["DIST_NON_EVENT"] = d3.NONEVENT/d3.sum().NONEVENT
             d3["WOE"] = np.log(d3.DIST_EVENT/d3.DIST_NON_EVENT)
+            d3 = d3[['COUNT', 'EVENT', 'NONEVENT', 'DIST_EVENT','DIST_NON_EVENT','WOE']] 
             print('\nDataframe d3')
             print(d3)
             print(d3.to_string())
