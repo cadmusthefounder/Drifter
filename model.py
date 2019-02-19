@@ -181,7 +181,7 @@ class Model:
         result = np.array(result).T
         print('result.shape: {}'.format(result.shape))
 
-        data = np.concatenate((result, data[,info['numerical_starting_index']:]), axis=1)
+        data = np.concatenate((result, data[:,info['numerical_starting_index']:]), axis=1)
         print('data.shape: {}'.format(data.shape))
         return data
 
