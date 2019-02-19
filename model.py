@@ -173,10 +173,11 @@ class Model:
         data = np.nan_to_num(data)
 
         # Convert categorical nan
-        # if info['no_of_categorical_features'] > 0:
-        #     categorical_data = F['CAT'].fillna('nan').values
-        #     data = np.concatenate((data, categorical_data), axis=1)
-        #     del categorical_data
+        if info['no_of_categorical_features'] > 0:
+            print(F['CAT'].dtypes)
+            # categorical_data = F['CAT'].fillna('nan').values
+            # data = np.concatenate((data, categorical_data), axis=1)
+            del categorical_data
 
         # Convert mvc nan
         # if info['no_of_mvc_features'] > 0:
