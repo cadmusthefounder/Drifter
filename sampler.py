@@ -29,7 +29,7 @@ class BiasedReservoirSampler:
                 self._p_in *= (1 - self._q)
                 no_of_points_to_delete = int(self._q * self._capacity)
 
-                for j in range(no_of_points_to_delete)
+                for j in range(no_of_points_to_delete):
                     k = randint(0, len(current_reservoir_data))
                     current_reservoir_data = np.delete(current_reservoir_data, k, 0)
                     current_reservoir_label = np.delete(current_reservoir_label, k)
