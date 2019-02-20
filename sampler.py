@@ -9,6 +9,7 @@ class BiasedReservoirSampler:
         self._capacity = capacity
         self._bias_rate = bias_rate
         self._p_in = 1
+        print(self._capacity )
         self._q = pow(self._capacity, -1)
 
     def sample(self, current_reservoir_data, current_reservoir_label, incoming_data, incoming_label):
