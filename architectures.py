@@ -134,6 +134,6 @@ class BiasedReservoirSampler_LightGBM:
             transformed_data = np.concatenate((transformed_data, encoded_mvc_data), axis=1)
 
         print('transformed_data.shape: {}'.format(transformed_data.shape))
-        probabilities = self._classifier.predict_proba(transformed_data)
+        probabilities = self._classifier.predict_proba(transformed_data)[:,1]
         print('probabilities.shape: {}\n'.format(probabilities.shape))
         return probabilities
