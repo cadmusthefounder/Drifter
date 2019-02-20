@@ -115,8 +115,11 @@ class BiasedReservoirSampler_LightGBM:
         info = extract(datainfo, timeinfo)
         print_time_info(info)
 
+        data = get_data(F, info)
+        print('data.shape: {}'.format(data.shape))
+
         transformed_data = np.array([])
-        time_data, numerical_data, categorical_data, mvc_data = split_data_by_type(self._training_data, info)
+        time_data, numerical_data, categorical_data, mvc_data = split_data_by_type(data, info)
         if len(time_data) > 0:
             transformed_data = subtract_min_time(time_data)
             transformed_data = np.concatenate((transformed_data, difference_between_time_columns(time_data)), axis=1)

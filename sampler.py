@@ -17,6 +17,8 @@ class BiasedReservoirSampler:
         print('incoming_data.shape: {}'.format(incoming_data.shape))
         print('incoming_label.shape: {}'.format(incoming_label.shape))
 
+        actual_p_in = self._capacity * self._bias_rate
+
         for i in range(len(incoming_data)):
             if len(current_reservoir_data) <= self._capacity:
                 fraction_filled = float(len(current_reservoir_data)) / float(self._capacity)
@@ -30,16 +32,13 @@ class BiasedReservoirSampler:
                                                     np.append(current_reservoir_data, [incoming_data[i]], axis=0)
                         current_reservoir_label = [incoming_label[i]] if len(current_reservoir_label) == 0 else \
                                                     np.append(current_reservoir_label, [incoming_label[i]], axis=0) 
-            elif self._p_in > self._capacity * self._bias_rate:
+            elif self._p_in > actual_p_in:
                 self._p_in *= (1 - self._q)
-                no_of_points_to_delete = int(self._q * self._capacity)
+                current_reservoir_data = np.delete(current_reservoir_data, 0, 0)
+                current_reservoir_label = np.delete(current_reservoir_label, 0)
 
-                for j in range(no_of_points_to_delete):
-                    k = round(random() * len(current_reservoir_data))
-                    current_reservoir_data = np.delete(current_reservoir_data, k, 0)
-                    current_reservoir_label = np.delete(current_reservoir_label, k)
-            elif self._p_in <= self._capacity * self._bias_rate:
-                self._p = self._capacity * self._bias_rate
+            elif self._p_in <= actual_p_in:
+                self._p = actual_p_in
 
         return current_reservoir_data, current_reservoir_label
 
