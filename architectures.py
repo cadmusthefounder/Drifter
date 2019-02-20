@@ -112,7 +112,7 @@ class BiasedReservoirSampler_LightGBM:
     def predict(self, F, datainfo, timeinfo):
         print('\npredict')
 
-        extract(datainfo, timeinfo)
+        info = extract(datainfo, timeinfo)
         print_time_info(info)
 
         transformed_data = np.array([])
