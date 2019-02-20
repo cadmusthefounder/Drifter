@@ -54,7 +54,7 @@ def get_data(F, info):
 
     data = np.array([])
     if info['no_of_time_features'] > 0 or info['no_of_numerical_features'] > 0:
-        data = F['numerical'].values
+        data = F['numerical']
 
     if info['no_of_categorical_features'] > 0:
         data = F['CAT'].values if len(data) == 0 else np.concatenate((data, F['CAT'].values), axis=1)
