@@ -14,6 +14,7 @@ from hyperparameters_tuner import HyperparametersTuner
 from sampler import BiasedReservoirSampler
 
 class BiasedReservoirSampler_LightGBM:
+    NAME = 'BiasedReservoirSampler_LightGBM'
     
     def __init__(self, datainfo, timeinfo):
         info = extract(datainfo, timeinfo)

@@ -3,7 +3,6 @@ from random import random, randint
 import numpy as np
 
 class BiasedReservoirSampler:
-    NAME = 'BiasedReservoirSampler'
 
     def __init__(self, capacity, bias_rate):
         self._capacity = capacity

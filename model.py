@@ -1,12 +1,12 @@
 import pickle
 from os.path import isfile
 
-from architectures import BiasedReservoirSampler
+from architectures import BiasedReservoirSampler_LightGBM
 
-ARCHITECTURE = BiasedReservoirSampler.NAME
+ARCHITECTURE = BiasedReservoirSampler_LightGBM.NAME
 
 architecture_mapping = {
-    BiasedReservoirSampler.NAME: BiasedReservoirSampler
+    BiasedReservoirSampler_LightGBM.NAME: BiasedReservoirSampler_LightGBM
 }
 
 class Model:
