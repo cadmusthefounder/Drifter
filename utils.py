@@ -9,7 +9,7 @@ import pandas as pd
 
 pip_install('category_encoders')
 
-from categorical_encoders import HashingEncoder
+from category_encoders import HashingEncoder
 
 def pip_install(package):
     pip.main(['install', package])
