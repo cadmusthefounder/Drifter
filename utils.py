@@ -1,7 +1,9 @@
 import pip
+def pip_install(package):
+    pip.main(['install', package])
+
 import time
 import random
-
 import numpy as np
 import pandas as pd
 
