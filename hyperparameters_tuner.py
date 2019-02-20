@@ -12,7 +12,7 @@ class HyperparametersTuner:
 
     def get_best_hyperparameters(self, data, labels):
         self._training_data = data
-        self._training_labels = labels.ravel()
+        self._training_labels = labels
 
         # Try fixed hyperparameters
         classifier = self._classifier_class()
