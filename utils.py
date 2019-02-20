@@ -77,7 +77,7 @@ def split_data_by_type(data, info):
                     data[:,numerical_data_starting_index:categorical_data_starting_index]
     categorical_data = np.array([]) if info['no_of_categorical_features'] == 0 else \
                     data[:,categorical_data_starting_index:mvc_data_starting_index]
-    mvc_data = np.array([]) if info['no_of_categorical_features'] == 0 else \
+    mvc_data = np.array([]) if info['no_of_mvc_features'] == 0 else \
                     data[:,mvc_data_starting_index:]
 
     print('time_data.shape :{}'.format(time_data.shape))
