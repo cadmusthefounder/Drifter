@@ -76,9 +76,8 @@ class BiasedReservoirSampler_LightGBM:
         bincount = np.bincount(y.astype(int))
         print('Number of 0 label: {}'.format(bincount[0]))
         print('Number of 1 label: {}'.format(bincount[1]))
-
-        oversampled_data, oversampled_labels = self._smotenc_sampler.sample(data, y)
         
+        oversampled_data, oversampled_labels = self._smotenc_sampler.sample(data, y)
         if has_sufficient_time(self._dataset_budget_threshold, info) or self._classifier is None:
             sampled_training_data, sampled_training_labels = self._biased_reservoir_sampler.sample(oversampled_data, oversampled_labels)
 
