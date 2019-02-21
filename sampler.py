@@ -35,6 +35,8 @@ class BiasedReservoirSampler:
                                                 np.append(current_reservoir_data, [incoming_data[i]], axis=0)
                     current_reservoir_label = [incoming_label[i]] if len(current_reservoir_label) == 0 else \
                                                 np.append(current_reservoir_label, [incoming_label[i]], axis=0) 
+                
+                self._current_index += 1
 
         print('after sampling current_reservoir_data.shape: {}'.format(current_reservoir_data.shape))
         print('after sampling current_reservoir_label.shape: {}\n'.format(current_reservoir_label.shape))
