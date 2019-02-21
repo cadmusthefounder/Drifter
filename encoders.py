@@ -51,14 +51,7 @@ class CountWoeEncoder:
 class BinaryEncoder:
 
     def __init__(self, info):
-        if info['no_of_categorical_features'] > 0:
-            cat_features = list(range(info['categorical_data_starting_index'], info['total_no_of_features']))
-            self._binary_encoder = BinaryEncoder(cols=cat_features, return_df=False)
-        elif info['no_of_mvc_features'] > 0:
-            cat_features = list(range(info['mvc_starting_index'], info['total_no_of_features']))
-            self._binary_encoder = BinaryEncoder(cols=cat_features, return_df=False)
-        else:
-            self._binary_encoder = BinaryEncoder(return_df=False)
+        self._binary_encoder = BinaryEncoder(return_df=False)
 
     def encode(self, incoming_data, incoming_labels=None):
         print('\nencode')

@@ -5,7 +5,7 @@ import numpy as np
 from utils import pip_install
 pip_install('imbalanced-learn')
 
-from imblearn.over_sampling import SMOTE, SMOTENC
+from imblearn.over_sampling import SMOTE, SMOTENC, BorderlineSMOTE
 
 class BiasedReservoirSampler:
 
@@ -70,6 +70,20 @@ class BiasedReservoirSampler:
 
     def _generate_p_in_array(self):
         return np.random.random_sample(size=self._size)
+
+class BorderlineSMOTESampler:
+
+    def __init__(self, random_state=42):
+        self._random_state = random_state
+        self._borderline_smote_sampler = BorderlineSMOTE(random_state=self._random_state)
+
+    def sample(self, incoming_data, incoming_labels):
+        print('\nsample')
+        sampled_data, sampled_labels = self._borderline_smote_sampler.fit_resample(incoming_data, incoming_labels)
+
+        print('sampled_data.shape: {}'.format(sampled_data.shape))
+        print('sampeld_labels.shape: {}\n'.format(sampled_labels.shape))
+        return sampled_data, sampled_labels
 
 class SMOTENCSampler:
 
