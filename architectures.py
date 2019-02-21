@@ -12,7 +12,7 @@ from hyperopt.pyll.base import scope
 from hyperparameters_tuner import HyperparametersTuner
 from sklearn.metrics import roc_auc_score
 
-from samplers import BiasedReservoirSampler, BorderlineSMOTESampler
+from samplers import BiasedReservoirSampler
 from ciphers import CountWoeCipher, BinaryCipher
 
 class SMOTENC_BiasedReservoirSampler_LightGBM:
@@ -26,13 +26,12 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
         self._capacity = 320000
         self._bias_rate = pow(10, -6)
         self._biased_reservoir_sampler = BiasedReservoirSampler(self._capacity, self._bias_rate, info)
-        self._borderline_smote_sampler = BorderlineSMOTESampler()
         
         self._dataset_budget_threshold = 0.8
-        self._cat_encoder = CountWoeCipher()
-        self._mvc_encoder = CountWoeCipher()
-        # self._cat_encoder = BinaryCipher()
-        # self._mvc_encoder = BinaryCipher()
+        # self._cat_encoder = CountWoeCipher()
+        # self._mvc_encoder = CountWoeCipher()
+        self._cat_encoder = BinaryCipher()
+        self._mvc_encoder = BinaryCipher()
         
         self._classifier = None
         self._classifier_class = LGBMClassifier
@@ -97,18 +96,16 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
                 transformed_data = np.concatenate((transformed_data, encoded_mvc_data), axis=1)
 
             print('transformed_data.shape: {}'.format(transformed_data.shape))
-            sampled_training_data, sampled_training_labels = self._borderline_smote_sampler.sample(transformed_data, sampled_training_labels)
-
             if self._best_hyperparameters is None:
                 tuner = HyperparametersTuner(self._classifier_class, self._fixed_hyperparameters, self._search_space)
-                self._best_hyperparameters = tuner.get_best_hyperparameters(sampled_training_data, sampled_training_labels)
+                self._best_hyperparameters = tuner.get_best_hyperparameters(transformed_data, sampled_training_labels)
 
                 print('self._best_hyperparameters: {}\n'.format(self._best_hyperparameters))
 
                 self._classifier = self._classifier_class()
                 self._classifier.set_params(**self._best_hyperparameters)
         
-        self._classifier.fit(sampled_training_data, sampled_training_labels)
+        self._classifier.fit(transformed_data, sampled_training_labels)
 
     def predict(self, F, datainfo, timeinfo):
         print('\npredict')
