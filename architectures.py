@@ -12,7 +12,7 @@ from hyperopt.pyll.base import scope
 from hyperparameters_tuner import HyperparametersTuner
 from sklearn.metrics import roc_auc_score
 
-from samplers import BiasedReservoirSampler
+from samplers import BiasedReservoirSampler, SMOTENCSampler
 from encoders import CountWoeEncoder
 
 class BiasedReservoirSampler_LightGBM:
@@ -25,7 +25,8 @@ class BiasedReservoirSampler_LightGBM:
         
         self._capacity = 350000
         self._bias_rate = pow(10, -6)
-        self._sampler = BiasedReservoirSampler(self._capacity, self._bias_rate, info)
+        self._biased_reservoir_sampler = BiasedReservoirSampler(self._capacity, self._bias_rate, info)
+        self._smotenc_sampler = SMOTENCSampler(info)
         
         self._dataset_budget_threshold = 0.8
         self._cat_encoder = CountWoeEncoder()
@@ -74,11 +75,11 @@ class BiasedReservoirSampler_LightGBM:
         bincount = np.bincount(y.astype(int))
         print('Number of 0 label: {}'.format(bincount[0]))
         print('Number of 1 label: {}'.format(bincount[1]))
+
+        oversampled_data, oversampled_labels = self._smotenc_sampler.sample(data, y)
         
         if has_sufficient_time(self._dataset_budget_threshold, info) or self._classifier is None:
-            sampled_training_data, sampled_training_labels = self._sampler.sample(data, y)
-            print('sampled_training_data.shape: {}'.format(sampled_training_data.shape))
-            print('sampled_training_labels.shape: {}'.format(sampled_training_labels.shape))
+            sampled_training_data, sampled_training_labels = self._biased_reservoir_sampler.sample(oversampled_data, oversampled_labels)
 
             transformed_data = np.array([])
             time_data, numerical_data, categorical_data, mvc_data = split_data_by_type(sampled_training_data, info)

@@ -5,6 +5,8 @@ import numpy as np
 from utils import pip_install
 pip_install('imbalanced-learn')
 
+from imblearn.over_sampling import SMOTENC
+
 class BiasedReservoirSampler:
 
     def __init__(self, capacity, bias_rate, info):
@@ -44,12 +46,15 @@ class BiasedReservoirSampler:
                 self._current_index += 1
 
         actual_reservoir_data = self._current_reservoir_data
-        actual_reservoir_label = self._current_reservoir_label
+        actual_reservoir_labels = self._current_reservoir_label
         if self._current_capacity < self._capacity:
             actual_reservoir_data = actual_reservoir_data[:self._current_capacity,:]
-            actual_reservoir_label = actual_reservoir_label[:self._current_capacity]
+            actual_reservoir_labels = actual_reservoir_labels[:self._current_capacity]
 
-        return actual_reservoir_data, actual_reservoir_label
+
+        print('actual_reservoir_data.shape: {}'.format(actual_reservoir_data.shape))
+        print('actual_reservoir_labels.shape : {}\n'.format(actual_reservoir_labels))
+        return actual_reservoir_data, actual_reservoir_labels
 
     def _triggered(self):
         if self._p_in_index >= len(self._p_in_array):
@@ -65,3 +70,19 @@ class BiasedReservoirSampler:
 
     def _generate_p_in_array(self):
         return np.random.random_sample(size=self._size)
+
+class SMOTENCSampler:
+
+    def __init__(self, info, random_state=42):
+        self._smotenc_sampler = SMOTENC(
+            random_state, 
+            categorical_features=list(range(info['categorical_data_starting_index'], info['total_no_of_features']))
+        )
+
+    def sample(self, incoming_data, incoming_labels):
+        print('\nsample')
+        sampled_data, sampled_labels = self._smotenc_sampler.fit_resample(incoming_data, incoming_labels)
+
+        print('sampled_data.shape: {}'.format(sampled_data.shape))
+        print('sampeld_labels.shape: {}\n'.format(sampled_labels.shape))
+        return sampled_data, sampled_labels

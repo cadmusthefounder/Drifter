@@ -23,6 +23,10 @@ def extract(datainfo, timeinfo):
     total_no_of_features = no_of_time_features + no_of_numerical_features + \
                         no_of_categorical_features + no_of_mvc_features
 
+    numerical_data_starting_index = info['no_of_time_features']
+    categorical_data_starting_index = numerical_data_starting_index + info['no_of_numerical_features']
+    mvc_data_starting_index = categorical_data_starting_index + info['no_of_categorical_features']
+
     current_time = time.time() 
     overall_time_spent = current_time - timeinfo[0]
     dataset_time_spent = current_time- timeinfo[1]
@@ -34,6 +38,9 @@ def extract(datainfo, timeinfo):
         'no_of_categorical_features': no_of_categorical_features,
         'no_of_mvc_features': no_of_mvc_features,
         'total_no_of_features': total_no_of_features,
+        'numerical_data_starting_index': numerical_data_starting_index,
+        'categorical_data_starting_index': categorical_data_starting_index,
+        'mvc_data_starting_index': mvc_data_starting_index
         'overall_time_spent': overall_time_spent,
         'dataset_time_spent': dataset_time_spent
     }
@@ -68,17 +75,13 @@ def get_data(F, info):
 def split_data_by_type(data, info):
     print('\nsplit_data_by_type')
 
-    numerical_data_starting_index = info['no_of_time_features']
-    categorical_data_starting_index = numerical_data_starting_index + info['no_of_numerical_features']
-    mvc_data_starting_index = categorical_data_starting_index + info['no_of_categorical_features']
-
-    time_data = np.array([]) if info['no_of_time_features'] == 0 else data[:,:numerical_data_starting_index]
+    time_data = np.array([]) if info['no_of_time_features'] == 0 else data[:,:info['numerical_data_starting_index']]
     numerical_data = np.array([]) if info['no_of_numerical_features'] == 0 else \
-                    data[:,numerical_data_starting_index:categorical_data_starting_index]
+                    data[:,info['numerical_data_starting_index']:info['categorical_data_starting_index']]
     categorical_data = np.array([]) if info['no_of_categorical_features'] == 0 else \
-                    data[:,categorical_data_starting_index:mvc_data_starting_index]
+                    data[:,info['categorical_data_starting_index']:info['mvc_data_starting_index']]
     mvc_data = np.array([]) if info['no_of_mvc_features'] == 0 else \
-                    data[:,mvc_data_starting_index:]
+                    data[:,info['mvc_data_starting_index']:]
 
     print('time_data.shape :{}'.format(time_data.shape))
     print('numerical_data.shape :{}'.format(numerical_data.shape))
