@@ -26,7 +26,8 @@ class BiasedReservoirSampler_LightGBM:
         self._sampler = BiasedReservoirSampler(self._capacity, self._bias_rate, info)
         
         self._dataset_budget_threshold = 0.8
-        self._encoder = None
+        self._cat_encoder = None
+        self._mvc_encoder = None
         
         self._classifier = None
         self._classifier_class = LGBMClassifier
@@ -86,10 +87,18 @@ class BiasedReservoirSampler_LightGBM:
                 transformed_data = numerical_data if len(transformed_data) == 0 else \
                                     np.concatenate((transformed_data, numerical_data), axis=1)
             if len(categorical_data) > 0:
-                encoded_categorical_data, self._encoder = hash(categorical_data, labels=sampled_training_labels)
+                encoded_categorical_data, self._cat_encoder = hash(
+                    categorical_data, 
+                    info['no_of_categorical_features'], 
+                    labels=sampled_training_labels
+                )
                 transformed_data = np.concatenate((transformed_data, encoded_categorical_data), axis=1)
             if len(mvc_data) > 0:
-                encoded_mvc_data, self._encoder = hash(mvc_data, labels=sampled_training_labels)
+                encoded_mvc_data, self._mvc_encoder = hash(
+                    mvc_data, 
+                    info['no_of_mvc_features'], 
+                    labels=sampled_training_labels
+                )
                 transformed_data = np.concatenate((transformed_data, encoded_mvc_data), axis=1)
 
             print('transformed_data.shape: {}'.format(transformed_data.shape))
@@ -122,10 +131,18 @@ class BiasedReservoirSampler_LightGBM:
             transformed_data = numerical_data if len(transformed_data) == 0 else \
                                 np.concatenate((transformed_data, numerical_data), axis=1)
         if len(categorical_data) > 0:
-            encoded_categorical_data, self._encoder = hash(categorical_data, encoder=self._encoder)
+            encoded_categorical_data, self._cat_encoder = hash(
+                categorical_data, 
+                info['no_of_categorical_features'], 
+                encoder=self._cat_encoder
+            )
             transformed_data = np.concatenate((transformed_data, encoded_categorical_data), axis=1)
         if len(mvc_data) > 0:
-            encoded_mvc_data, self._encoder = hash(mvc_data, encoder=self._encoder)
+            encoded_mvc_data, self._mvc_encoder = hash(
+                mvc_data, 
+                info['no_of_mvc_features'], 
+                encoder=self._mvc_encoder
+            )
             transformed_data = np.concatenate((transformed_data, encoded_mvc_data), axis=1)
 
         print('transformed_data.shape: {}'.format(transformed_data.shape))
