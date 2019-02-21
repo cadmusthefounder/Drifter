@@ -54,8 +54,7 @@ def get_data(F, info):
 
     data = np.array([])
     if info['no_of_time_features'] > 0 or info['no_of_numerical_features'] > 0:
-        # data = np.nan_to_num(F['numerical'])
-        data = F['numerical']
+        data = np.nan_to_num(F['numerical'])
 
     if info['no_of_categorical_features'] > 0:
         data = F['CAT'].fillna('nan').values if len(data) == 0 else np.concatenate((data, F['CAT'].fillna('nan').values), axis=1)
@@ -95,7 +94,10 @@ def subtract_min_time(time_data):
     result = []
     for i in range(no_of_cols):
         time_col = time_data[:,i].astype(float)
-        non_zero_indices = np.nonzero(time_col)[0]
+        print(time_col)
+        non_zero_indices = np.flatnonzero(time_col)
+        print(non_zero_indices)
+        print(np.min(time_col[non_zero_indices]))
         difference = time_col - np.min(time_col[non_zero_indices])
         result.append(difference)
     result = np.array(result).T
