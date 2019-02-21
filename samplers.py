@@ -5,7 +5,7 @@ import numpy as np
 from utils import pip_install
 pip_install('imbalanced-learn')
 
-from imblearn.over_sampling import SMOTENC
+from imblearn.over_sampling import SMOTE, SMOTENC
 
 class BiasedReservoirSampler:
 
@@ -77,21 +77,12 @@ class SMOTENCSampler:
         self._random_state = random_state
         if info['no_of_categorical_features'] > 0:
             cat_features = list(range(info['categorical_data_starting_index'], info['total_no_of_features']))
-            self._smotenc_sampler = SMOTENC(
-                cat_features,
-                random_state=self._random_state
-            )
+            self._smotenc_sampler = SMOTENC(cat_features, random_state=self._random_state)
         elif info['no_of_mvc_features'] > 0:
             cat_features = list(range(info['mvc_starting_index'], info['total_no_of_features']))
-            self._smotenc_sampler = SMOTENC(
-                cat_features,
-                random_state=self._random_state
-            )
+            self._smotenc_sampler = SMOTENC(cat_features, random_state=self._random_state)
         else:
-            self._smotenc_sampler = SMOTENC(
-                [],
-                random_state=self._random_state
-            )
+            self._smotenc_sampler = SMOTE(random_state=self._random_state)
 
     def sample(self, incoming_data, incoming_labels):
         print('\nsample')
