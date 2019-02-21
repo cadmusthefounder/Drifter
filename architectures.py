@@ -93,7 +93,7 @@ class BiasedReservoirSampler_LightGBM:
             print('transformed_data.shape: {}'.format(transformed_data.shape))
             if self._best_hyperparameters is None:
                 tuner = HyperparametersTuner(self._classifier_class, self._fixed_hyperparameters, self._search_space)
-                self._best_hyperparameters = tuner.get_best_hyperparameters(transformed_data, self._training_labels)
+                self._best_hyperparameters = tuner.get_best_hyperparameters(transformed_data, sampled_training_labels)
 
                 print('self._best_hyperparameters: {}\n'.format(self._best_hyperparameters))
 
