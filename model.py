@@ -15,6 +15,14 @@ class Model:
         self._architecture = architecture_mapping[ARCHITECTURE](datainfo, timeinfo)
         
     def fit(self, F, y, datainfo, timeinfo):
+        X = np.nan_to_num(F['numerical'][:,2])
+        first = X[:,0]
+        print(np.where(first == 0)[0].shape)
+
+        second = X[:,1]
+        print(np.where(second == 0)[0].shape)
+
+
         self._architecture.fit(F, y, datainfo, timeinfo)
 
     def predict(self, F, datainfo, timeinfo):

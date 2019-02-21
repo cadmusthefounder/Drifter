@@ -86,7 +86,7 @@ def subtract_min_time(time_data):
     print('\nsubtract_min_time')
     print('time_data.shape: {}'.format(time_data.shape))
     # result = np.apply_along_axis(
-    #     lambda x: x.astype(float) - np.min(x[np.nonzero(x.astype(float))[0]]), 
+    #     lambda x: x.astype(float) - np.min(x[np.flatnonzero(x.astype(float))]), 
     #     0, 
     #     time_data
     # )
