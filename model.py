@@ -1,6 +1,8 @@
 import pickle
 from os.path import isfile
 
+import numpy as np
+
 from architectures import SMOTENC_BiasedReservoirSampler_LightGBM
 
 ARCHITECTURE = SMOTENC_BiasedReservoirSampler_LightGBM.NAME
