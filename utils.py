@@ -97,11 +97,13 @@ def subtract_min_time(time_data):
         print(time_col)
         non_zero_indices = np.flatnonzero(time_col)
         print(non_zero_indices)
-
+        print(100)    
+        print(np.where(time_col == 0)[0].shape)
 
         print(102)
         print(time_col[non_zero_indices])
         print(104)
+        
         difference = time_col - np.min(time_col[non_zero_indices])
         result.append(difference)
     result = np.array(result).T
