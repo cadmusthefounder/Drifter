@@ -100,7 +100,7 @@ class BiasedReservoirSampler_LightGBM:
                 self._classifier = self._classifier_class()
                 self._classifier.set_params(**self._best_hyperparameters)
         
-        self._classifier.fit(transformed_data, self._training_labels)
+        self._classifier.fit(transformed_data, sampled_training_labels)
 
     def predict(self, F, datainfo, timeinfo):
         print('\npredict')
