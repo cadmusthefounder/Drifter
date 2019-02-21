@@ -27,9 +27,9 @@ class BiasedReservoirSampler:
                     self._current_index = 0
                     self._indices = self._generate_indices(self._capacity, self._size)
 
-                if indices[self._current_index] < len(current_reservoir_data):
-                    current_reservoir_data[indices[self._current_index]] = incoming_data[i]
-                    current_reservoir_label[indices[self._current_index]] = incoming_label[i]
+                if self._indices[self._current_index] < len(current_reservoir_data):
+                    current_reservoir_data[self._indices[self._current_index]] = incoming_data[i]
+                    current_reservoir_label[self._indices[self._current_index]] = incoming_label[i]
                 else:
                     current_reservoir_data = [incoming_data[i]] if len(current_reservoir_data) == 0 else \
                                                 np.append(current_reservoir_data, [incoming_data[i]], axis=0)
