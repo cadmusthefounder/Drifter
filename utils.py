@@ -23,9 +23,9 @@ def extract(datainfo, timeinfo):
     total_no_of_features = no_of_time_features + no_of_numerical_features + \
                         no_of_categorical_features + no_of_mvc_features
 
-    numerical_data_starting_index = info['no_of_time_features']
-    categorical_data_starting_index = numerical_data_starting_index + info['no_of_numerical_features']
-    mvc_data_starting_index = categorical_data_starting_index + info['no_of_categorical_features']
+    numerical_data_starting_index = no_of_time_features
+    categorical_data_starting_index = numerical_data_starting_index + no_of_numerical_features
+    mvc_data_starting_index = categorical_data_starting_index + no_of_categorical_features
 
     current_time = time.time() 
     overall_time_spent = current_time - timeinfo[0]
