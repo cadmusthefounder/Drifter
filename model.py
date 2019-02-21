@@ -17,6 +17,8 @@ class Model:
         self._architecture = architecture_mapping[ARCHITECTURE](datainfo, timeinfo)
         
     def fit(self, F, y, datainfo, timeinfo):
+        print(F['numerical'][:,2])
+
         X = np.nan_to_num(F['numerical'][:,:2])
         first = X[:,0]
         print(np.where(first == 0)[0].shape)
