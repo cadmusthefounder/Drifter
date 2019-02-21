@@ -110,6 +110,7 @@ def difference_between_time_columns(time_data):
                 if len(np.nonzero(time_data[:,i])) > 0 and len(np.nonzero(time_data[:,j])) > 0:
                     difference = time_data[:,i] - time_data[:,j]
                     result = difference if len(result) == 0 else np.concatenate((result, difference), axis=1)
+    result = result.T
     print('result.shape: {}\n'.format(result.shape)) 
     return result
 
