@@ -78,6 +78,7 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
         print('Number of 0 label: {}'.format(bincount[0]))
         print('Number of 1 label: {}'.format(bincount[1]))
         
+        sampled_training_data, sampled_training_labels = self._biased_reservoir_sampler.sample(data, y)
         if has_sufficient_time(self._dataset_budget_threshold, info) or self._classifier is None:
 
             transformed_data = np.array([])
@@ -96,9 +97,7 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
                 transformed_data = np.concatenate((transformed_data, encoded_mvc_data), axis=1)
 
             print('transformed_data.shape: {}'.format(transformed_data.shape))
-            
-            sampled_training_data, sampled_training_labels = self._biased_reservoir_sampler.sample(transformed_data, y)
-            sampled_training_data, sampled_training_labels = self._borderline_smote_sampler.sample(sampled_training_data, sampled_training_labels)
+            sampled_training_data, sampled_training_labels = self._borderline_smote_sampler.sample(transformed_data, sampled_training_labels)
 
             if self._best_hyperparameters is None:
                 tuner = HyperparametersTuner(self._classifier_class, self._fixed_hyperparameters, self._search_space)
@@ -109,7 +108,7 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
                 self._classifier = self._classifier_class()
                 self._classifier.set_params(**self._best_hyperparameters)
         
-        self._classifier.fit(transformed_data, sampled_training_labels)
+        self._classifier.fit(sampled_training_data, sampled_training_labels)
 
     def predict(self, F, datainfo, timeinfo):
         print('\npredict')
