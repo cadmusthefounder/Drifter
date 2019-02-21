@@ -82,7 +82,7 @@ def split_data_by_type(data, info):
     print('mvc_data.shape :{}\n'.format(mvc_data.shape))
     return time_data, numerical_data, categorical_data, mvc_data
 
-def subtract_min_time(time_data):
+def subtract_min_time(≈):
     print('\nsubtract_min_time')
     print('time_data.shape: {}'.format(time_data.shape))
     # result = np.apply_along_axis(
@@ -93,7 +93,7 @@ def subtract_min_time(time_data):
     no_of_rows, no_of_cols = time_data.shape
     result = []
     for i in range(no_of_cols):
-        time_col = data[:,i].astype(float)
+        time_col = time_data[:,i].astype(float)
         non_zero_indices = np.nonzero(time_col)[0]
         difference = time_col - np.min(time_col[non_zero_indices])
         result.append(difference)
