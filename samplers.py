@@ -19,10 +19,10 @@ class BiasedReservoirSampler:
         self._current_reservoir_data = np.empty([self._capacity, info['total_no_of_features']], dtype=object)
         self._current_reservoir_label = np.empty(self._capacity)
         
-    def sample(self, incoming_data, incoming_label):
+    def sample(self, incoming_data, incoming_labels):
         print('\nsample')
         print('incoming_data.shape: {}'.format(incoming_data.shape))
-        print('incoming_label.shape: {}'.format(incoming_label.shape))
+        print('incoming_labels.shape: {}'.format(incoming_labels.shape))
         
         for i in range(len(incoming_data)):
             if self._current_capacity < self._capacity or self._triggered():
@@ -32,10 +32,10 @@ class BiasedReservoirSampler:
 
                 if self._indices[self._current_index] < self._current_capacity:
                     self._current_reservoir_data[self._indices[self._current_index]] = incoming_data[i]
-                    self._current_reservoir_label[self._indices[self._current_index]] = incoming_label[i]
+                    self._current_reservoir_label[self._indices[self._current_index]] = incoming_labels[i]
                 else:
                     self._current_reservoir_data[self._current_capacity] = incoming_data[i]
-                    self._current_reservoir_label[self._current_capacity] = incoming_label[i]
+                    self._current_reservoir_label[self._current_capacity] = incoming_labels[i]
                     self._current_capacity += 1
                 
                 self._current_index += 1

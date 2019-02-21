@@ -114,42 +114,6 @@ def difference_between_time_columns(time_data):
     print('result.shape: {}\n'.format(result.shape)) 
     return result
 
-def compute_woe(categorical_or_mvc_data, labels=None, woe_map={}):
-    print('\ncompute_woe')
-    no_of_rows, no_of_cols = categorical_or_mvc_data.shape
-    print('categorical_or_mvc_data.shape: {}'.format((no_of_rows, no_of_cols)))
-    
-    result = np.array([])
-    if labels is None and not woe_map: # predict
-        for i in range(no_of_cols):
-            d0 = pd.DataFrame({'X': categorical_or_mvc_data[:,i]})
-            d1 = d0.join(woe_map[i], on='X')[['WOE']].values
-            result = d1 if len(result) == 0 else np.concatenate((result, d1), axis=1)
-            del d0
-    else: #fit
-        for i in range(no_of_cols):
-            d0 = pd.DataFrame({'X': categorical_or_mvc_data[:,i], 'Y': labels.ravel()})
-            d1 = d0.groupby('X',as_index=True)
-            d2 = pd.DataFrame({},index=[])
-            d2['COUNT'] = d1.count().Y
-            d2['EVENT'] = d1.sum().Y
-            d2['NONEVENT'] = d2.COUNT - d2.EVENT
-            d2['DIST_EVENT'] = d2.EVENT/d2.sum().EVENT
-            d2['DIST_NON_EVENT'] = d2.NONEVENT/d2.sum().NONEVENT
-            d2['WOE'] = np.log(d2.DIST_EVENT/d2.DIST_NON_EVENT)
-            # d2['IV'] = (d2.DIST_EVENT - d2.DIST_NON_EVENT) * d2.WOE
-            d2 = d2[['COUNT','WOE']] 
-            d2 = d2.replace([np.inf, -np.inf], 0)
-            # d2.IV = d2.IV.sum()
-
-            woe_map[i] = d2
-            d3 = d0.join(d2, on='X')[['WOE']].values
-            result = d3 if len(result) == 0 else np.concatenate((result, d3), axis=1)   
-            del d0
-            del d1
-    print('result.shape: {}\n'.format(result.shape)) 
-    return result, woe_map
-
 def hash_encoding(categorical_or_mvc_data, labels=None, encoder=None):
     print('\nhash')
     result = np.array([])
