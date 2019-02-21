@@ -156,7 +156,7 @@ def hash(categorical_or_mvc_data, k, labels=None, encoder=None):
     if labels is None and encoder is not None: # predict
         result = encoder.transform(categorical_or_mvc_data)
     else: #fit
-        encoder = HashingEncoder(n_component=20*k)
+        encoder = HashingEncoder(n_components=20*k)
         result = encoder.fit_transform(categorical_or_mvc_data, labels)
 
     print('result.shape: {}\n'.format(result.shape)) 
