@@ -64,7 +64,7 @@ class BinaryCipher:
             result = self._binary_encoder.fit_transform(incoming_data, incoming_labels)
 
         print('result.shape: {}\n'.format(result.shape)) 
-        return result, encoder
+        return result
 
 # def hash_encoding(categorical_or_mvc_data, labels=None, encoder=None):
 #     print('\nhash')
@@ -76,4 +76,4 @@ class BinaryCipher:
     #     result = encoder.fit_transform(categorical_or_mvc_data, labels)
 
     # print('result.shape: {}\n'.format(result.shape)) 
-    # return result, encoder
+    # return result

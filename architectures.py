@@ -23,7 +23,7 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
         print_data_info(info)
         print_time_info(info)
         
-        self._capacity = 350000
+        self._capacity = 320000
         self._bias_rate = pow(10, -6)
         self._biased_reservoir_sampler = BiasedReservoirSampler(self._capacity, self._bias_rate, info)
         self._smotenc_sampler = SMOTENCSampler(info)
