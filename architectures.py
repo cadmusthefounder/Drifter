@@ -80,7 +80,7 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
         
         if has_sufficient_time(self._dataset_budget_threshold, info) or self._classifier is None:
             sampled_training_data, sampled_training_labels = self._biased_reservoir_sampler.sample(data, y)
-            sampled_training_data, sampled_training_labels = self._smotenc_sampler.sample(sampled_training_data, sampled_training_labels)
+            # sampled_training_data, sampled_training_labels = self._smotenc_sampler.sample(sampled_training_data, sampled_training_labels)
 
             transformed_data = np.array([])
             time_data, numerical_data, categorical_data, mvc_data = split_data_by_type(sampled_training_data, info)
