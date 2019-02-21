@@ -65,13 +65,13 @@ def get_data(F, info):
 
     data = np.array([])
     if info['no_of_time_features'] > 0 or info['no_of_numerical_features'] > 0:
-        data = F['numerical']
+        data = np.nan_to_num(F['numerical'])
 
     if info['no_of_categorical_features'] > 0:
-        data = F['CAT'].values if len(data) == 0 else np.concatenate((data, F['CAT'].values), axis=1)
+        data = F['CAT'].fillna('nan').values if len(data) == 0 else np.concatenate((data, F['CAT'].values), axis=1)
 
     if info['no_of_mvc_features'] > 0:
-        data = F['MV'].values if len(data) == 0 else np.concatenate((data, F['MV'].values), axis=1)
+        data = F['MV'].fillna('nan').values if len(data) == 0 else np.concatenate((data, F['MV'].values), axis=1)
 
     print('data.shape: {}\n'.format(data.shape))
     return data
@@ -92,9 +92,6 @@ def split_data_by_type(data, info):
     print('categorical_data.shape :{}'.format(categorical_data.shape))
     print('mvc_data.shape :{}\n'.format(mvc_data.shape))
     return time_data, numerical_data, categorical_data, mvc_data
-
-def convert_nan(data):
-    return np.nan_to_num(data)
 
 def subtract_min_time(time_data):
     print('\nsubtract_min_time')

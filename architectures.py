@@ -68,7 +68,6 @@ class BiasedReservoirSampler_LightGBM:
         print_time_info(info)
 
         data = get_data(F, info)
-        data = convert_nan(data)
         y = y.ravel()
 
         print('data.shape: {}'.format(data.shape))
@@ -115,7 +114,6 @@ class BiasedReservoirSampler_LightGBM:
         print_time_info(info)
 
         data = get_data(F, info)
-        data = convert_nan(data)
         print('data.shape: {}'.format(data.shape))
 
         transformed_data = np.array([])
