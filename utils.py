@@ -82,7 +82,7 @@ def split_data_by_type(data, info):
     print('mvc_data.shape :{}\n'.format(mvc_data.shape))
     return time_data, numerical_data, categorical_data, mvc_data
 
-def subtract_min_time(≈):
+def subtract_min_time(time_data):
     print('\nsubtract_min_time')
     print('time_data.shape: {}'.format(time_data.shape))
     # result = np.apply_along_axis(
