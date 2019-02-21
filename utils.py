@@ -150,13 +150,13 @@ def compute_woe(categorical_or_mvc_data, labels=None, woe_map={}):
     print('result.shape: {}\n'.format(result.shape)) 
     return result, woe_map
 
-def hash(categorical_or_mvc_data, k, labels=None, encoder=None):
+def hash_encoding(categorical_or_mvc_data, labels=None, encoder=None):
     print('\nhash')
     result = np.array([])
     if labels is None and encoder is not None: # predict
         result = encoder.transform(categorical_or_mvc_data)
     else: #fit
-        encoder = HashingEncoder(n_components=20*k)
+        encoder = HashingEncoder(cols=list(range(categorical_or_mvc_data.shape[1])), n_components=10)
         result = encoder.fit_transform(categorical_or_mvc_data, labels)
 
     print('result.shape: {}\n'.format(result.shape)) 

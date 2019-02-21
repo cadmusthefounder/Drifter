@@ -87,16 +87,14 @@ class BiasedReservoirSampler_LightGBM:
                 transformed_data = numerical_data if len(transformed_data) == 0 else \
                                     np.concatenate((transformed_data, numerical_data), axis=1)
             if len(categorical_data) > 0:
-                encoded_categorical_data, self._cat_encoder = hash(
-                    categorical_data, 
-                    info['no_of_categorical_features'], 
+                encoded_categorical_data, self._cat_encoder = hash_encoding(
+                    categorical_data,
                     labels=sampled_training_labels
                 )
                 transformed_data = np.concatenate((transformed_data, encoded_categorical_data), axis=1)
             if len(mvc_data) > 0:
-                encoded_mvc_data, self._mvc_encoder = hash(
+                encoded_mvc_data, self._mvc_encoder = hash_encoding(
                     mvc_data, 
-                    info['no_of_mvc_features'], 
                     labels=sampled_training_labels
                 )
                 transformed_data = np.concatenate((transformed_data, encoded_mvc_data), axis=1)
@@ -131,16 +129,14 @@ class BiasedReservoirSampler_LightGBM:
             transformed_data = numerical_data if len(transformed_data) == 0 else \
                                 np.concatenate((transformed_data, numerical_data), axis=1)
         if len(categorical_data) > 0:
-            encoded_categorical_data, self._cat_encoder = hash(
+            encoded_categorical_data, self._cat_encoder = hash_encoding(
                 categorical_data, 
-                info['no_of_categorical_features'], 
                 encoder=self._cat_encoder
             )
             transformed_data = np.concatenate((transformed_data, encoded_categorical_data), axis=1)
         if len(mvc_data) > 0:
-            encoded_mvc_data, self._mvc_encoder = hash(
+            encoded_mvc_data, self._mvc_encoder = hash_encoding(
                 mvc_data, 
-                info['no_of_mvc_features'], 
                 encoder=self._mvc_encoder
             )
             transformed_data = np.concatenate((transformed_data, encoded_mvc_data), axis=1)
