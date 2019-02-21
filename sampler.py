@@ -22,8 +22,8 @@ class BiasedReservoirSampler:
         for i in range(len(incoming_data)):
             if len(current_reservoir_data) < self._capacity or self._triggered(self._p_in):
                 if indices[i] < len(current_reservoir_data):
-                    current_reservoir_data[j] = incoming_data[i]
-                    current_reservoir_label[j] = incoming_label[i]
+                    current_reservoir_data[indices[i]] = incoming_data[i]
+                    current_reservoir_label[indices[i]] = incoming_label[i]
                 else:
                     current_reservoir_data = [incoming_data[i]] if len(current_reservoir_data) == 0 else \
                                                 np.append(current_reservoir_data, [incoming_data[i]], axis=0)
