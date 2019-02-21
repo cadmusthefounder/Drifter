@@ -68,7 +68,7 @@ class BiasedReservoirSampler_LightGBM:
 
         print('data.shape: {}'.format(data.shape))
         print('y.shape: {}'.format(y.shape))
-        bincount = np.bincount(y)
+        bincount = np.bincount(y.astype(int))
         print('Number of 0 label: {}'.format(bincount[0]))
         print('Number of 1 label: {}'.format(bincount[1]))
         
