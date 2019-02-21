@@ -89,10 +89,10 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
                 transformed_data = numerical_data if len(transformed_data) == 0 else \
                                     np.concatenate((transformed_data, numerical_data), axis=1)
             if len(categorical_data) > 0:
-                encoded_categorical_data = self._cat_encoder.encode(categorical_data, incoming_labels=sampled_training_labels)
+                encoded_categorical_data = self._cat_encoder.encode(categorical_data, incoming_labels=y)
                 transformed_data = np.concatenate((transformed_data, encoded_categorical_data), axis=1)
             if len(mvc_data) > 0:
-                encoded_mvc_data = self._mvc_encoder.encode(mvc_data, incoming_labels=sampled_training_labels)
+                encoded_mvc_data = self._mvc_encoder.encode(mvc_data, incoming_labels=y)
                 transformed_data = np.concatenate((transformed_data, encoded_mvc_data), axis=1)
 
             print('transformed_data.shape: {}'.format(transformed_data.shape))
