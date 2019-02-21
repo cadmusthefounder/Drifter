@@ -12,7 +12,7 @@ from hyperopt.pyll.base import scope
 from hyperparameters_tuner import HyperparametersTuner
 from sklearn.metrics import roc_auc_score
 
-from samplers import BiasedReservoirSampler, BorderlineSMOTESampler
+from samplers import BiasedReservoirSampler, SMOTENCSampler
 from ciphers import CountWoeCipher, BinaryCipher
 
 class SMOTENC_BiasedReservoirSampler_LightGBM:
@@ -23,16 +23,16 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
         print_data_info(info)
         print_time_info(info)
         
-        self._capacity = 320000
+        self._capacity = 350000
         self._bias_rate = pow(10, -6)
         self._biased_reservoir_sampler = BiasedReservoirSampler(self._capacity, self._bias_rate, info)
-        self._borderline_smote_sampler = BorderlineSMOTESampler(info)
+        self._smotenc_sampler = SMOTENCSampler(info)
         
         self._dataset_budget_threshold = 0.8
-        self._cat_encoder = CountWoeCipher()
-        self._mvc_encoder = CountWoeCipher()
-        # self._cat_encoder = BinaryCipher()
-        # self._mvc_encoder = BinaryCipher()
+        # self._cat_encoder = CountWoeCipher()
+        # self._mvc_encoder = CountWoeCipher()
+        self._cat_encoder = BinaryCipher()
+        self._mvc_encoder = BinaryCipher()
         
         self._classifier = None
         self._classifier_class = LGBMClassifier
@@ -79,8 +79,11 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
         print('Number of 1 label: {}'.format(bincount[1]))
         
         if has_sufficient_time(self._dataset_budget_threshold, info) or self._classifier is None:
+            sampled_training_data, sampled_training_labels = self._biased_reservoir_sampler.sample(data, y)
+            sampled_training_data, sampled_training_labels = self._smotenc_sampler.sample(sampled_training_data, sampled_training_labels)
+
             transformed_data = np.array([])
-            time_data, numerical_data, categorical_data, mvc_data = split_data_by_type(data, info)
+            time_data, numerical_data, categorical_data, mvc_data = split_data_by_type(sampled_training_data, info)
             if len(time_data) > 0:
                 transformed_data = subtract_min_time(time_data)
                 transformed_data = np.concatenate((transformed_data, difference_between_time_columns(time_data)), axis=1)
@@ -95,12 +98,9 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
                 transformed_data = np.concatenate((transformed_data, encoded_mvc_data), axis=1)
 
             print('transformed_data.shape: {}'.format(transformed_data.shape))
-            oversampled_training_data, oversampled_training_labels = self._borderline_smote_sampler.sample(transformed_data, y)
-            sampled_training_data, sampled_training_labels = self._biased_reservoir_sampler.sample(oversampled_training_data, oversampled_training_labels)
-            
             if self._best_hyperparameters is None:
                 tuner = HyperparametersTuner(self._classifier_class, self._fixed_hyperparameters, self._search_space)
-                self._best_hyperparameters = tuner.get_best_hyperparameters(sampled_training_data, sampled_training_labels)
+                self._best_hyperparameters = tuner.get_best_hyperparameters(transformed_data, sampled_training_labels)
 
                 print('self._best_hyperparameters: {}\n'.format(self._best_hyperparameters))
 
