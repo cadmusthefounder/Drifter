@@ -85,11 +85,19 @@ def split_data_by_type(data, info):
 def subtract_min_time(time_data):
     print('\nsubtract_min_time')
     print('time_data.shape: {}'.format(time_data.shape))
-    result = np.apply_along_axis(
-        lambda x: x.astype(float) - np.min(x[np.nonzero(x.astype(float))[0]]), 
-        0, 
-        time_data
-    )
+    # result = np.apply_along_axis(
+    #     lambda x: x.astype(float) - np.min(x[np.nonzero(x.astype(float))[0]]), 
+    #     0, 
+    #     time_data
+    # )
+    no_of_rows, no_of_cols = time_data.shape
+    result = []
+    for i in range(no_of_cols):
+        time_col = data[:,i].astype(float)
+        non_zero_indices = np.nonzero(time_col)[0]
+        difference = time_col - np.min(time_col[non_zero_indices])
+        result.append(difference)
+    result = np.array(result).T
     print('result.shape: {}\n'.format(result.shape)) 
     return result
 
