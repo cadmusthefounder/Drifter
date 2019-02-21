@@ -21,8 +21,6 @@ class BiasedReservoirSampler:
         
     def sample(self, incoming_data, incoming_label):
         print('\nsample')
-        print('before sampling self._current_reservoir_data.shape: {}'.format(self._current_reservoir_data.shape))
-        print('before sampling self._current_reservoir_label.shape: {}'.format(self._current_reservoir_label.shape))
         print('incoming_data.shape: {}'.format(incoming_data.shape))
         print('incoming_label.shape: {}'.format(incoming_label.shape))
         
@@ -42,9 +40,13 @@ class BiasedReservoirSampler:
                 
                 self._current_index += 1
 
-        print('after sampling self._current_reservoir_data.shape: {}'.format(self._current_reservoir_data.shape))
-        print('after sampling self._current_reservoir_label.shape: {}\n'.format(self._current_reservoir_label.shape))
-        return current_reservoir_data, current_reservoir_label
+        actual_reservoir_data = self._current_reservoir_data
+        actual_reservoir_label = self._current_reservoir_label
+        if self._current_capacity < self._capacity:
+            actual_reservoir_data = actual_reservoir_data[:self._current_capacity,:]
+            actual_reservoir_label = actual_reservoir_label[:self._current_capacity]
+
+        return actual_reservoir_data, actual_reservoir_label
 
     def _triggered(self):
         if self._p_in_index >= len(self._p_in_array):
