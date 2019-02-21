@@ -74,9 +74,11 @@ class BiasedReservoirSampler:
 class SMOTENCSampler:
 
     def __init__(self, info, random_state=42):
+        a = list(range(info['categorical_data_starting_index'], info['total_no_of_features']))
+        print(a)
         self._smotenc_sampler = SMOTENC(
             random_state, 
-            categorical_features=list(range(info['categorical_data_starting_index'], info['total_no_of_features']))
+            categorical_features=a
         )
 
     def sample(self, incoming_data, incoming_labels):
