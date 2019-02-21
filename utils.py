@@ -40,7 +40,7 @@ def extract(datainfo, timeinfo):
         'total_no_of_features': total_no_of_features,
         'numerical_data_starting_index': numerical_data_starting_index,
         'categorical_data_starting_index': categorical_data_starting_index,
-        'mvc_data_starting_index': mvc_data_starting_index
+        'mvc_data_starting_index': mvc_data_starting_index,
         'overall_time_spent': overall_time_spent,
         'dataset_time_spent': dataset_time_spent
     }
