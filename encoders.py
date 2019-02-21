@@ -51,7 +51,7 @@ class CountWoeEncoder:
 class BinaryEncoder:
 
     def __init__(self, info):
-        self._binary_encoder = BinaryEncoder(return_df=False)
+        self._binary_encoder = BinaryEncoder()
 
     def encode(self, incoming_data, incoming_labels=None):
         print('\nencode')
