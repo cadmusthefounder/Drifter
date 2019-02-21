@@ -94,7 +94,7 @@ def split_data_by_type(data, info):
     return time_data, numerical_data, categorical_data, mvc_data
 
 def convert_nan(data):
-    return np.nan_to_num(time_data)
+    return np.nan_to_num(data)
 
 def subtract_min_time(time_data):
     print('\nsubtract_min_time')
