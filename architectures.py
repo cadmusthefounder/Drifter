@@ -23,7 +23,7 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
         print_data_info(info)
         print_time_info(info)
         
-        self._capacity = 350000
+        self._capacity = 320000
         self._bias_rate = pow(10, -6)
         self._biased_reservoir_sampler = BiasedReservoirSampler(self._capacity, self._bias_rate, info)
         self._borderline_smote_sampler = BorderlineSMOTESampler()
@@ -96,8 +96,9 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
                 transformed_data = np.concatenate((transformed_data, encoded_mvc_data), axis=1)
 
             print('transformed_data.shape: {}'.format(transformed_data.shape))
-            sampled_training_data, sampled_training_labels = self._borderline_smote_sampler.sample(transformed_data, y)
-            sampled_training_data, sampled_training_labels = self._biased_reservoir_sampler.sample(sampled_training_data, sampled_training_labels)
+            
+            sampled_training_data, sampled_training_labels = self._biased_reservoir_sampler.sample(transformed_data, y)
+            sampled_training_data, sampled_training_labels = self._borderline_smote_sampler.sample(sampled_training_data, sampled_training_labels)
 
             if self._best_hyperparameters is None:
                 tuner = HyperparametersTuner(self._classifier_class, self._fixed_hyperparameters, self._search_space)

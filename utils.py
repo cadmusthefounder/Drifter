@@ -90,15 +90,6 @@ def subtract_min_time(time_data):
         0, 
         time_data
     )
-    # no_of_rows, no_of_cols = time_data.shape
-    # result = []
-    # for i in range(no_of_cols):
-    #     time_col = time_data[:,i].astype(float)
-    #     non_zero_indices = np.flatnonzero(time_col)
-    #     if len(non_zero_indices) != 0:
-    #         difference = time_col - np.min(time_col[non_zero_indices])
-    #         result.append(difference)
-    # result = np.array(result).T
     print('result.shape: {}\n'.format(result.shape)) 
     return result
 
