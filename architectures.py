@@ -84,10 +84,10 @@ class BiasedReservoirSampler_LightGBM:
                 transformed_data = numerical_data if len(transformed_data) == 0 else \
                                     np.concatenate((transformed_data, numerical_data), axis=1)
             if len(categorical_data) > 0:
-                encoded_categorical_data, self._encoder = hash(categorical_data, labels=self._training_labels)
+                encoded_categorical_data, self._encoder = hash(categorical_data, labels=sampled_training_labels)
                 transformed_data = np.concatenate((transformed_data, encoded_categorical_data), axis=1)
             if len(mvc_data) > 0:
-                encoded_mvc_data, self._encoder = hash(mvc_data, labels=self._training_labels)
+                encoded_mvc_data, self._encoder = hash(mvc_data, labels=sampled_training_labels)
                 transformed_data = np.concatenate((transformed_data, encoded_mvc_data), axis=1)
 
             print('transformed_data.shape: {}'.format(transformed_data.shape))
