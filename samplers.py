@@ -53,7 +53,7 @@ class BiasedReservoirSampler:
 
 
         print('actual_reservoir_data.shape: {}'.format(actual_reservoir_data.shape))
-        print('actual_reservoir_labels.shape : {}\n'.format(actual_reservoir_labels))
+        print('actual_reservoir_labels.shape : {}\n'.format(actual_reservoir_labels.shape))
         return actual_reservoir_data, actual_reservoir_labels
 
     def _triggered(self):

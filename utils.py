@@ -1,15 +1,8 @@
 import pip
-def pip_install(package):
-    pip.main(['install', package])
-
 import time
 import random
 import numpy as np
 import pandas as pd
-
-pip_install('category_encoders')
-
-from category_encoders import HashingEncoder
 
 def pip_install(package):
     pip.main(['install', package])
@@ -117,18 +110,6 @@ def difference_between_time_columns(time_data):
                     result = difference if len(result) == 0 else np.concatenate((result, difference), axis=1)
     print('result.shape: {}\n'.format(result.shape)) 
     return result
-
-def hash_encoding(categorical_or_mvc_data, labels=None, encoder=None):
-    print('\nhash')
-    result = np.array([])
-    if labels is None and encoder is not None: # predict
-        result = encoder.transform(categorical_or_mvc_data)
-    else: #fit
-        encoder = HashingEncoder(cols=list(range(categorical_or_mvc_data.shape[1])), n_components=10)
-        result = encoder.fit_transform(categorical_or_mvc_data, labels)
-
-    print('result.shape: {}\n'.format(result.shape)) 
-    return result, encoder
 
 def has_sufficient_time(dataset_budget_threshold, info):
     return info['dataset_time_spent'] < info['time_budget'] * dataset_budget_threshold

@@ -1,6 +1,9 @@
 import numpy as np
 import pandas as pd
 
+pip_install('category_encoders')
+from category_encoders.binary import BinaryEncoder
+
 class CountWoeEncoder:
 
     def __init__(self):
@@ -12,13 +15,13 @@ class CountWoeEncoder:
 
         no_of_rows, no_of_cols = incoming_data.shape
         result = np.array([])
-        if incoming_labels is None and self._count_woe_map:
+        if incoming_labels is None and self._count_woe_map: # predict
             for i in range(no_of_cols):
                 d0 = pd.DataFrame({'X': incoming_data[:,i]})
                 d1 = d0.join(self._count_woe_map[i], on='X')[['COUNT', 'WOE']].values
                 result = d1 if len(result) == 0 else np.concatenate((result, d1), axis=1)
                 del d0
-        else:
+        else: # fit
             print('incoming_labels.shape: {}'.format(incoming_labels.shape))
             for i in range(no_of_cols):
                 d0 = pd.DataFrame({'X': incoming_data[:,i], 'Y': incoming_labels})
@@ -42,3 +45,40 @@ class CountWoeEncoder:
                 del d1
         print('result.shape: {}\n'.format(result.shape)) 
         return result
+
+class BinaryEncoder:
+
+    def __init__(self, info):
+        if info['no_of_categorical_features'] > 0:
+            cat_features = list(range(info['categorical_data_starting_index'], info['total_no_of_features']))
+            self._binary_encoder = BinaryEncoder(cols=cat_features, return_df=False)
+        elif info['no_of_mvc_features'] > 0:
+            cat_features = list(range(info['mvc_starting_index'], info['total_no_of_features']))
+            self._binary_encoder = BinaryEncoder(cols=cat_features, return_df=False)
+        else:
+            self._binary_encoder = BinaryEncoder(return_df=False)
+
+    def encode(self, incoming_data, incoming_labels=None):
+        print('\nencode')
+        print('incoming_data.shape: {}'.format(incoming_data.shape))
+        result = np.array([])
+        if incoming_labels is None: # predict
+            result = self._binary_encoder.transform(incoming_data)
+        else: #fit
+            print('incoming_labels.shape: {}'.format(incoming_labels.shape))
+            result = self._binary_encoder.fit_transform(incoming_data, incoming_labels)
+
+        print('result.shape: {}\n'.format(result.shape)) 
+        return result, encoder
+
+# def hash_encoding(categorical_or_mvc_data, labels=None, encoder=None):
+#     print('\nhash')
+    # result = np.array([])
+    # if labels is None and encoder is not None: # predict
+    #     result = encoder.transform(categorical_or_mvc_data)
+    # else: #fit
+    #     encoder = HashingEncoder(cols=list(range(categorical_or_mvc_data.shape[1])), n_components=10)
+    #     result = encoder.fit_transform(categorical_or_mvc_data, labels)
+
+    # print('result.shape: {}\n'.format(result.shape)) 
+    # return result, encoder

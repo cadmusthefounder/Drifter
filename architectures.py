@@ -13,10 +13,10 @@ from hyperparameters_tuner import HyperparametersTuner
 from sklearn.metrics import roc_auc_score
 
 from samplers import BiasedReservoirSampler, SMOTENCSampler
-from encoders import CountWoeEncoder
+from encoders import CountWoeEncoder, BinaryEncoder
 
-class BiasedReservoirSampler_LightGBM:
-    NAME = 'BiasedReservoirSampler_LightGBM'
+class SMOTENC_BiasedReservoirSampler_LightGBM:
+    NAME = 'SMOTENC_BiasedReservoirSampler_LightGBM'
     
     def __init__(self, datainfo, timeinfo):
         info = extract(datainfo, timeinfo)
@@ -29,8 +29,10 @@ class BiasedReservoirSampler_LightGBM:
         self._smotenc_sampler = SMOTENCSampler(info)
         
         self._dataset_budget_threshold = 0.8
-        self._cat_encoder = CountWoeEncoder()
-        self._mvc_encoder = CountWoeEncoder()
+        # self._cat_encoder = CountWoeEncoder()
+        # self._mvc_encoder = CountWoeEncoder()
+        self._cat_encoder = BinaryEncoder(info)
+        self._mvc_encoder = BinaryEncoder(info)
         
         self._classifier = None
         self._classifier_class = LGBMClassifier
@@ -76,9 +78,9 @@ class BiasedReservoirSampler_LightGBM:
         print('Number of 0 label: {}'.format(bincount[0]))
         print('Number of 1 label: {}'.format(bincount[1]))
         
-        oversampled_data, oversampled_labels = self._smotenc_sampler.sample(data, y)
         if has_sufficient_time(self._dataset_budget_threshold, info) or self._classifier is None:
-            sampled_training_data, sampled_training_labels = self._biased_reservoir_sampler.sample(oversampled_data, oversampled_labels)
+            sampled_training_data, sampled_training_labels = self._biased_reservoir_sampler.sample(data, y)
+            sampled_training_data, sampled_training_labels = self._smotenc_sampler.sample(sampled_training_data, sampled_training_labels)
 
             transformed_data = np.array([])
             time_data, numerical_data, categorical_data, mvc_data = split_data_by_type(sampled_training_data, info)
