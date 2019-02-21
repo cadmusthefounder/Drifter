@@ -13,7 +13,7 @@ from hyperparameters_tuner import HyperparametersTuner
 from sklearn.metrics import roc_auc_score
 
 from samplers import BiasedReservoirSampler, SMOTENCSampler
-from encoders import CountWoeEncoder, BinaryEncoder
+from ciphers import CountWoeCipher, BinaryCipher
 
 class SMOTENC_BiasedReservoirSampler_LightGBM:
     NAME = 'SMOTENC_BiasedReservoirSampler_LightGBM'
@@ -29,10 +29,10 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
         self._smotenc_sampler = SMOTENCSampler(info)
         
         self._dataset_budget_threshold = 0.8
-        # self._cat_encoder = CountWoeEncoder()
-        # self._mvc_encoder = CountWoeEncoder()
-        self._cat_encoder = BinaryEncoder(info)
-        self._mvc_encoder = BinaryEncoder(info)
+        # self._cat_encoder = CountWoeCipher()
+        # self._mvc_encoder = CountWoeCipher()
+        self._cat_encoder = BinaryCipher()
+        self._mvc_encoder = BinaryCipher()
         
         self._classifier = None
         self._classifier_class = LGBMClassifier

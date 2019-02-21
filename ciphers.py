@@ -6,7 +6,7 @@ from utils import pip_install
 pip_install('category_encoders')
 from category_encoders.binary import BinaryEncoder
 
-class CountWoeEncoder:
+class CountWoeCipher:
 
     def __init__(self):
         self._count_woe_map = {}
@@ -48,10 +48,10 @@ class CountWoeEncoder:
         print('result.shape: {}\n'.format(result.shape)) 
         return result
 
-class BinaryEncoder:
+class BinaryCipher:
 
-    def __init__(self, info):
-        self._binary_encoder = BinaryEncoder()
+    def __init__(self):
+        self._binary_encoder = BinaryEncoder(return_df=False)
 
     def encode(self, incoming_data, incoming_labels=None):
         print('\nencode')
