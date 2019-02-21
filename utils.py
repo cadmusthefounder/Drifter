@@ -99,8 +99,9 @@ def subtract_min_time(time_data):
         print(non_zero_indices)
 
 
-
+        print(102)
         print(time_col[non_zero_indices])
+        print(104)
         difference = time_col - np.min(time_col[non_zero_indices])
         result.append(difference)
     result = np.array(result).T
