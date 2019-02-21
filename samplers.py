@@ -51,7 +51,6 @@ class BiasedReservoirSampler:
             actual_reservoir_data = actual_reservoir_data[:self._current_capacity,:]
             actual_reservoir_labels = actual_reservoir_labels[:self._current_capacity]
 
-
         print('actual_reservoir_data.shape: {}'.format(actual_reservoir_data.shape))
         print('actual_reservoir_labels.shape : {}\n'.format(actual_reservoir_labels.shape))
         return actual_reservoir_data, actual_reservoir_labels
