@@ -85,28 +85,20 @@ def split_data_by_type(data, info):
 def subtract_min_time(time_data):
     print('\nsubtract_min_time')
     print('time_data.shape: {}'.format(time_data.shape))
-    # result = np.apply_along_axis(
-    #     lambda x: x.astype(float) - np.min(x[np.flatnonzero(x.astype(float))]), 
-    #     0, 
-    #     time_data
-    # )
-    no_of_rows, no_of_cols = time_data.shape
-    result = []
-    for i in range(no_of_cols):
-        time_col = time_data[:,i].astype(float)
-        print(time_col)
-        non_zero_indices = np.flatnonzero(time_col)
-        print(non_zero_indices)
-        print(100)    
-        print(np.where(time_col == 0)[0].shape)
-
-        print(102)
-        print(time_col[non_zero_indices])
-        print(104)
-        
-        difference = time_col - np.min(time_col[non_zero_indices])
-        result.append(difference)
-    result = np.array(result).T
+    result = np.apply_along_axis(
+        lambda x: x.astype(float) - np.min(x[np.flatnonzero(x)]) if len(np.flatnonzero(x)) != 0 else x, 
+        0, 
+        time_data
+    )
+    # no_of_rows, no_of_cols = time_data.shape
+    # result = []
+    # for i in range(no_of_cols):
+    #     time_col = time_data[:,i].astype(float)
+    #     non_zero_indices = np.flatnonzero(time_col)
+    #     if len(non_zero_indices) != 0:
+    #         difference = time_col - np.min(time_col[non_zero_indices])
+    #         result.append(difference)
+    # result = np.array(result).T
     print('result.shape: {}\n'.format(result.shape)) 
     return result
 
