@@ -2,6 +2,9 @@ from math import pow
 from random import random
 import numpy as np
 
+from utils import pip_install
+pip_install('imbalanced-learn')
+
 class BiasedReservoirSampler:
 
     def __init__(self, capacity, bias_rate, info):

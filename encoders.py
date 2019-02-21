@@ -9,7 +9,6 @@ class CountWoeEncoder:
     def encode(self, incoming_data, incoming_labels=None):
         print('\nencode')
         print('incoming_data.shape: {}'.format(incoming_data.shape))
-        print('incoming_labels.shape: {}'.format(incoming_labels.shape))
 
         no_of_rows, no_of_cols = incoming_data.shape
         result = np.array([])
@@ -20,6 +19,7 @@ class CountWoeEncoder:
                 result = d1 if len(result) == 0 else np.concatenate((result, d1), axis=1)
                 del d0
         else:
+            print('incoming_labels.shape: {}'.format(incoming_labels.shape))
             for i in range(no_of_cols):
                 d0 = pd.DataFrame({'X': incoming_data[:,i], 'Y': incoming_labels})
                 d1 = d0.groupby('X',as_index=True)
