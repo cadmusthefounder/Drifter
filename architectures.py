@@ -68,7 +68,9 @@ class BiasedReservoirSampler_LightGBM:
 
         print('data.shape: {}'.format(data.shape))
         print('y.shape: {}'.format(y.shape))
-        # find y skewed
+        bincount = np.bincount(y)
+        print('Number of 0 label: {}'.format(bincount[0]))
+        print('Number of 1 label: {}'.format(bincount[1]))
         
         if has_sufficient_time(self._dataset_budget_threshold, info) or self._classifier is None:
             sampled_training_data, sampled_training_labels = self._sampler.sample(data, y)
