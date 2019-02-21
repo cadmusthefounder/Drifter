@@ -16,7 +16,7 @@ class BiasedReservoirSampler:
         self._indices = self._generate_indices()
         
         self._current_capacity = 0
-        self._current_reservoir_data = np.array2string(np.empty([self._capacity, info['total_no_of_features']]))
+        self._current_reservoir_data = np.empty([self._capacity, info['total_no_of_features']], dtype=object)
         self._current_reservoir_label = np.empty(self._capacity)
         
     def sample(self, incoming_data, incoming_label):
