@@ -82,7 +82,7 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
         if has_sufficient_time(self._dataset_budget_threshold, info) or self._classifier is None:
 
             transformed_data = np.array([])
-            time_data, numerical_data, categorical_data, mvc_data = split_data_by_type(data, info)
+            time_data, numerical_data, categorical_data, mvc_data = split_data_by_type(sampled_training_data, info)
             if len(time_data) > 0:
                 transformed_data = subtract_min_time(time_data)
                 transformed_data = np.concatenate((transformed_data, difference_between_time_columns(time_data)), axis=1)
