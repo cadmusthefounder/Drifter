@@ -23,11 +23,9 @@ class BiasedReservoirSampler_LightGBM:
         
         self._capacity = 350000
         self._bias_rate = pow(10, -6)
-        self._sampler = BiasedReservoirSampler(self._capacity, self._bias_rate)
+        self._sampler = BiasedReservoirSampler(self._capacity, self._bias_rate, info)
         
         self._dataset_budget_threshold = 0.8
-        self._training_data = np.array([])
-        self._training_labels = np.array([])
         self._encoder = None
         
         self._classifier = None
@@ -73,17 +71,12 @@ class BiasedReservoirSampler_LightGBM:
         # find y skewed
         
         if has_sufficient_time(self._dataset_budget_threshold, info) or self._classifier is None:
-            self._training_data, self._training_labels = self._sampler.sample(
-                self._training_data, 
-                self._training_labels, 
-                data, 
-                y
-            )
-            print('self._training_data.shape: {}'.format(self._training_data.shape))
-            print('self._training_labels.shape: {}'.format(self._training_labels.shape))
+            sampled_training_data, sampled_training_labels = self._sampler.sample(data, y)
+            print('sampled_training_data.shape: {}'.format(sampled_training_data.shape))
+            print('sampled_training_labels.shape: {}'.format(sampled_training_labels.shape))
 
             transformed_data = np.array([])
-            time_data, numerical_data, categorical_data, mvc_data = split_data_by_type(self._training_data, info)
+            time_data, numerical_data, categorical_data, mvc_data = split_data_by_type(sampled_training_data, info)
             if len(time_data) > 0:
                 transformed_data = subtract_min_time(time_data)
                 transformed_data = np.concatenate((transformed_data, difference_between_time_columns(time_data)), axis=1)
