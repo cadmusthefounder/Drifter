@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 
+from utils import pip_install
+
 pip_install('category_encoders')
 from category_encoders.binary import BinaryEncoder
 
