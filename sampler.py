@@ -44,4 +44,4 @@ class BiasedReservoirSampler:
         return random() <= probability
 
     def _generate_indices(self, capacity, size):
-        return np.random.randint(capacity, size)
+        return np.random.randint(capacity, size=size)
