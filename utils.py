@@ -27,6 +27,10 @@ def extract(datainfo, timeinfo):
     categorical_data_starting_index = numerical_data_starting_index + no_of_numerical_features
     mvc_data_starting_index = categorical_data_starting_index + no_of_categorical_features
 
+    print(numerical_data_starting_index)
+    print(categorical_data_starting_index)
+    print(mvc_data_starting_index)
+
     current_time = time.time() 
     overall_time_spent = current_time - timeinfo[0]
     dataset_time_spent = current_time- timeinfo[1]
