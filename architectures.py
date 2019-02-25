@@ -3,7 +3,7 @@ from utils import *
 
 pip_install('lightgbm')
 pip_install('hyperopt')
-pip_install('scikit-multiflow')
+pip_install('git+https://github.com/scikit-multiflow/scikit-multiflow')
 
 import numpy as np
 
