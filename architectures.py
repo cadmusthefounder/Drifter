@@ -103,35 +103,35 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
             self._classifier = self._classifier_class()
             self._classifier.set_params(**self._best_hyperparameters)
             self._classifier.fit(transformed_data, y)
-        else:
-            predictions = self._classifier.predict(transformed_data)
-            stack = np.column_stack((predictions, y))
-            if_error = lambda t: 0 if t[0] != t[1] else 1
-            errors = np.array(list(map(if_error, stack)))
 
-            change_detected = False
-            for i in range(len(errors)):
-                self._adwin.add_element(errors[i])
-                self._eddm.add_element(errors[i])
-                self._ph.add_element(errors[i])
-                
-                if self._adwin.detected_change():
-                    self._adwin.reset()
-                    change_detected = True
-                    print('ADWIN detected drift at data point: {}'.format(i))
-                if self._eddm.detected_change():
-                    self._eddm.reset()
-                    change_detected = True
-                    print('EDDM detected drift at data point: {}'.format(i))
-                if self._ph.detected_change():
-                    self._ph.reset()
-                    change_detected = True
-                    print('PH detected drift at data point: {}'.format(i))
+        predictions = self._classifier.predict(transformed_data)
+        stack = np.column_stack((predictions, y))
+        if_error = lambda t: 0 if t[0] != t[1] else 1
+        errors = np.array(list(map(if_error, stack)))
 
-                if change_detected and has_sufficient_time(self._dataset_budget_threshold, info):
-                    self._classifier = self._classifier_class()
-                    self._classifier.set_params(**self._best_hyperparameters)
-                    self._classifier.fit(transformed_data, y)
+        change_detected = False
+        for i in range(len(errors)):
+            self._adwin.add_element(errors[i])
+            self._eddm.add_element(errors[i])
+            self._ph.add_element(errors[i])
+            
+            if self._adwin.detected_change():
+                self._adwin.reset()
+                change_detected = True
+                print('ADWIN detected drift at data point: {}'.format(i))
+            if self._eddm.detected_change():
+                self._eddm.reset()
+                change_detected = True
+                print('EDDM detected drift at data point: {}'.format(i))
+            if self._ph.detected_change():
+                self._ph.reset()
+                change_detected = True
+                print('PH detected drift at data point: {}'.format(i))
+
+        if change_detected and has_sufficient_time(self._dataset_budget_threshold, info):
+            self._classifier = self._classifier_class()
+            self._classifier.set_params(**self._best_hyperparameters)
+            self._classifier.fit(transformed_data, y)
 
     def predict(self, F, datainfo, timeinfo):
         print('\npredict')
