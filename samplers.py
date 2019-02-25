@@ -2,17 +2,12 @@ from math import pow
 from random import random
 import numpy as np
 
-from utils import pip_install
-pip_install('imbalanced-learn')
-
-from imblearn.over_sampling import SMOTE, SMOTENC, BorderlineSMOTE
-
 class BiasedReservoirSampler:
 
     def __init__(self, capacity, bias_rate, info):
         self._capacity = capacity
         self._bias_rate = bias_rate
-        self._size = 2000000
+        self._size = 10000
         self._p_in = self._capacity * self._bias_rate
         self._p_in_index = 0
         self._p_in_array = self._generate_p_in_array()
@@ -69,38 +64,3 @@ class BiasedReservoirSampler:
 
     def _generate_p_in_array(self):
         return np.random.random_sample(size=self._size)
-
-class BorderlineSMOTESampler:
-
-    def __init__(self, random_state=42):
-        self._random_state = random_state
-        self._borderline_smote_sampler = BorderlineSMOTE(random_state=self._random_state)
-
-    def sample(self, incoming_data, incoming_labels):
-        print('\nsample')
-        sampled_data, sampled_labels = self._borderline_smote_sampler.fit_resample(incoming_data, incoming_labels)
-
-        print('sampled_data.shape: {}'.format(sampled_data.shape))
-        print('sampeld_labels.shape: {}\n'.format(sampled_labels.shape))
-        return sampled_data, sampled_labels
-
-class SMOTENCSampler:
-
-    def __init__(self, info, random_state=42):
-        self._random_state = random_state
-        if info['no_of_categorical_features'] > 0:
-            cat_features = list(range(info['categorical_data_starting_index'], info['total_no_of_features']))
-            self._smotenc_sampler = SMOTENC(cat_features, random_state=self._random_state)
-        elif info['no_of_mvc_features'] > 0:
-            cat_features = list(range(info['mvc_starting_index'], info['total_no_of_features']))
-            self._smotenc_sampler = SMOTENC(cat_features, random_state=self._random_state)
-        else:
-            self._smotenc_sampler = SMOTE(random_state=self._random_state)
-
-    def sample(self, incoming_data, incoming_labels):
-        print('\nsample')
-        sampled_data, sampled_labels = self._smotenc_sampler.fit_resample(incoming_data, incoming_labels)
-
-        print('sampled_data.shape: {}'.format(sampled_data.shape))
-        print('sampeld_labels.shape: {}\n'.format(sampled_labels.shape))
-        return sampled_data, sampled_labels
