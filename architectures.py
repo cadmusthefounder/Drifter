@@ -107,7 +107,7 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
             predictions = self._classifier.predict(transformed_data)
             stack = np.column_stack((predictions, y))
             if_error = lambda t: 0 if t[0] != t[1] else 1
-            errors = np.array(map(if_error, stack))
+            errors = np.array(list(map(if_error, stack)))
 
             change_detected = False
             for i in range(len(errors)):
