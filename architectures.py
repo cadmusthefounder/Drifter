@@ -128,7 +128,7 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
                     change_detected = True
                     print('PH detected drift at data point: {}'.format(i))
 
-                if change_detected and has_sufficient_time(self._dataset_budget_threshold, info)
+                if change_detected and has_sufficient_time(self._dataset_budget_threshold, info):
                     self._classifier = self._classifier_class()
                     self._classifier.set_params(**self._best_hyperparameters)
                     self._classifier.fit(transformed_data, y)
