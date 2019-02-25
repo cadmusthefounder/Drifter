@@ -1,5 +1,13 @@
 import pickle
+import os
 from os.path import isfile
+
+cmd = 'apt-get install python3 python-dev python3-dev \
+        build-essential libssl-dev libffi-dev \
+        libxml2-dev libxslt1-dev zlib1g-dev \
+        python-pip'
+
+os.system(cmd)
 
 from architectures import SMOTENC_BiasedReservoirSampler_LightGBM
 
