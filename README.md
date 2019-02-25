@@ -8,7 +8,7 @@ cd app/codalab
 docker run -d -it -u root -v $(pwd):/app/codalab codalab/codalab-legacy:py3 bash
 docker exec -it <container_name> bin/bash
 
-docker exec -it laughing_haibt bin/bash
+docker exec -it gifted_banzai bin/bash
 
 docker exec -it fervent_villani bin/bash
 
