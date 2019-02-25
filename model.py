@@ -2,9 +2,11 @@ import pickle
 import os
 from os.path import isfile
 
-cmd = 'apt-get install libdpkg-perl'
+cmd1 = 'y | apt-get update'
+cmd2 = 'y | apt-get install libdpkg-perl'
 
-os.system(cmd)
+os.system(cmd1)
+os.system(cmd2)
 
 from architectures import SMOTENC_BiasedReservoirSampler_LightGBM
 
