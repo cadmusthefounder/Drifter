@@ -14,6 +14,7 @@ from hyperparameters_tuner import HyperparametersTuner
 
 from ciphers import BinaryCipher
 
+import scikit-multiflow as skmultiflow
 from skmultiflow.drift_detection.adwin import ADWIN
 from skmultiflow.drift_detection.eddm import EDDM
 from skmultiflow.drift_detection import PageHinkley
