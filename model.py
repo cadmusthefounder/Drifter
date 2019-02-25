@@ -2,7 +2,7 @@ import pickle
 import os
 from os.path import isfile
 
-cmd = 'apt-get install python-dev build-essential'
+cmd = 'apt-get install libdpkg-perl'
 
 os.system(cmd)
 
