@@ -50,8 +50,8 @@ class CountWoeCipher:
 
 class BinaryCipher:
 
-    def __init__(self):
-        self._binary_encoder = BinaryEncoder(return_df=False, handle_unknown='ignore')
+    def __init__(self, no_of_cols):
+        self._binary_encoder = BinaryEncoder(cols=list(range(no_of_cols)), return_df=False, handle_unknown='ignore')
 
     def encode(self, incoming_data, incoming_labels=None):
         print('\nencode')

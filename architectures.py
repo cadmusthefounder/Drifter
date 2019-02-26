@@ -31,8 +31,8 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
         self._ph = PageHinkley()
         
         self._dataset_budget_threshold = 0.8
-        self._cat_encoder = BinaryCipher()
-        self._mvc_encoder = BinaryCipher()
+        self._cat_encoder = BinaryCipher(info['no_of_categorical_features'])
+        self._mvc_encoder = BinaryCipher(info['no_of_mvc_features'])
         
         self._classifier = None
         self._classifier_class = LGBMClassifier
