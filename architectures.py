@@ -116,6 +116,8 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
             self._ph.add_element(errors[i])
             
             if self._adwin.detected_change():
+                info = self._adwin.get_info()
+                print('ADWIN info: {}'.format(info))
                 self._adwin.reset()
                 change_detected = True
                 print('ADWIN detected drift at data point: {}'.format(i))
@@ -123,10 +125,10 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
                 self._eddm.reset()
                 change_detected = True
                 print('EDDM detected drift at data point: {}'.format(i))
-            if self._ph.detected_change():
-                self._ph.reset()
-                change_detected = True
-                print('PH detected drift at data point: {}'.format(i))
+            # if self._ph.detected_change():
+            #     self._ph.reset()
+            #     change_detected = True
+            #     print('PH detected drift at data point: {}'.format(i))
 
         if change_detected and has_sufficient_time(self._dataset_budget_threshold, info):
             self._classifier = self._classifier_class()
