@@ -4,16 +4,15 @@ from os.path import isfile
 
 cmd1 = 'apt-get -y update'
 cmd2 = 'apt-get -y install libdpkg-perl'
-
 os.system(cmd1)
 os.system(cmd2)
 
-from architectures import SMOTENC_BiasedReservoirSampler_LightGBM
+from architectures import ADWIN_VFDT
 
-ARCHITECTURE = SMOTENC_BiasedReservoirSampler_LightGBM.NAME
+ARCHITECTURE = ADWIN_VFDT.NAME
 
 architecture_mapping = {
-    SMOTENC_BiasedReservoirSampler_LightGBM.NAME: SMOTENC_BiasedReservoirSampler_LightGBM
+    ADWIN_VFDT.NAME: ADWIN_VFDT
 }
 
 class Model:

@@ -24,6 +24,7 @@ class CountWoeCipher:
                 result = d1 if len(result) == 0 else np.concatenate((result, d1), axis=1)
                 del d0
         else: # fit
+            self._count_woe_map = {}
             print('incoming_labels.shape: {}'.format(incoming_labels.shape))
             for i in range(no_of_cols):
                 d0 = pd.DataFrame({'X': incoming_data[:,i], 'Y': incoming_labels})
