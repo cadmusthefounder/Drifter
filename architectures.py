@@ -1,7 +1,7 @@
 from utils import *
 pip_install('lightgbm')
 pip_install('hyperopt')
-pip_install('scikit-multiflow')
+# pip_install('scikit-multiflow')
 
 import numpy as np
 from math import pow
@@ -9,7 +9,7 @@ from lightgbm import LGBMClassifier
 from hyperopt import hp
 from hyperopt.pyll.base import scope
 from hyperparameters_tuner import HyperparametersTuner
-from skmultiflow.drift_detection.adwin import ADWIN
+# from skmultiflow.drift_detection.adwin import ADWIN
 from ciphers import CountWoeCipher
 from classifiers import Vfdt
 
@@ -62,7 +62,7 @@ class ADWIN_VFDT:
             transformed_data = np.concatenate((transformed_data, mvc_data), axis=1)
 
         print('transformed_data.shape: {}'.format(transformed_data.shape))
-        self._classifier = self._classifier_class(transformed_data.shape[1])
+        self._classifier = self._classifier_class(list(range(transformed_data.shape[1])))
         for i in range(len(transformed_data)):
             current_data, current_label = transformed_data[i], y[i]
             self._classifier.update(current_data, current_label)

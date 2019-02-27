@@ -2,10 +2,10 @@ import pickle
 import os
 from os.path import isfile
 
-cmd1 = 'apt-get -y update'
-cmd2 = 'apt-get -y install libdpkg-perl'
-os.system(cmd1)
-os.system(cmd2)
+# cmd1 = 'apt-get -y update'
+# cmd2 = 'apt-get -y install libdpkg-perl'
+# os.system(cmd1)
+# os.system(cmd2)
 
 from architectures import ADWIN_VFDT
 
