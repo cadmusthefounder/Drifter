@@ -115,16 +115,18 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
             self._eddm.add_element(errors[i])
             self._ph.add_element(errors[i])
             
+            width = self._adwin.width
+            print('ADWIN width: {}'.format(width))
             if self._adwin.detected_change():
                 width = self._adwin.width
-                print('ADWIN width: {}'.format(width))
-                self._adwin.reset()
+                # print('ADWIN width: {}'.format(width))
+                # self._adwin.reset()
                 change_detected = True
-                print('ADWIN detected drift at data point: {}'.format(i))
-            if self._eddm.detected_change():
-                self._eddm.reset()
-                change_detected = True
-                print('EDDM detected drift at data point: {}'.format(i))
+                print('ADWIN detected drift at data point {} with width {}'.format(i, width))
+            # if self._eddm.detected_change():
+            #     self._eddm.reset()
+            #     change_detected = True
+            #     print('EDDM detected drift at data point: {}'.format(i))
             # if self._ph.detected_change():
             #     self._ph.reset()
             #     change_detected = True
