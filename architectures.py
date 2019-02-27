@@ -115,8 +115,8 @@ class SMOTENC_BiasedReservoirSampler_LightGBM:
             self._eddm.add_element(errors[i])
             self._ph.add_element(errors[i])
             
-            width = self._adwin.width
-            print('ADWIN width: {}'.format(width))
+            # width = self._adwin.width
+            # print('ADWIN width: {}'.format(width))
             if self._adwin.detected_change():
                 width = self._adwin.width
                 # print('ADWIN width: {}'.format(width))
