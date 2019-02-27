@@ -56,14 +56,15 @@ class ADWIN_VFDT:
         if len(numerical_data) > 0:
             transformed_data = numerical_data if len(transformed_data) == 0 else \
                                 np.concatenate((transformed_data, numerical_data), axis=1)
-        if len(categorical_data) > 0:
-            transformed_data = np.concatenate((transformed_data, categorical_data), axis=1)
-        if len(mvc_data) > 0:
-            transformed_data = np.concatenate((transformed_data, mvc_data), axis=1)
+        # if len(categorical_data) > 0:
+        #     transformed_data = np.concatenate((transformed_data, categorical_data), axis=1)
+        # if len(mvc_data) > 0:
+        #     transformed_data = np.concatenate((transformed_data, mvc_data), axis=1)
 
         print('transformed_data.shape: {}'.format(transformed_data.shape))
         self._classifier = self._classifier_class(list(range(transformed_data.shape[1])))
         for i in range(len(transformed_data)):
+            print(i)
             current_data, current_label = transformed_data[i], y[i]
             self._classifier.update(current_data, current_label)
 
@@ -85,10 +86,10 @@ class ADWIN_VFDT:
         if len(numerical_data) > 0:
             transformed_data = numerical_data if len(transformed_data) == 0 else \
                                 np.concatenate((transformed_data, numerical_data), axis=1)
-        if len(categorical_data) > 0:
-            transformed_data = np.concatenate((transformed_data, categorical_data), axis=1)
-        if len(mvc_data) > 0:
-            transformed_data = np.concatenate((transformed_data, mvc_data), axis=1)
+        # if len(categorical_data) > 0:
+        #     transformed_data = np.concatenate((transformed_data, categorical_data), axis=1)
+        # if len(mvc_data) > 0:
+        #     transformed_data = np.concatenate((transformed_data, mvc_data), axis=1)
 
         print('transformed_data.shape: {}'.format(transformed_data.shape))
         predictions = np.array(self._classifier.predict(transformed_data))
