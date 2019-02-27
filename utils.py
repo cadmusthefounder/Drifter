@@ -57,12 +57,12 @@ def get_data(F, info):
         data = np.nan_to_num(F['numerical'])
 
     if info['no_of_categorical_features'] > 0:
-        data = F['CAT'].astype('|S').fillna('nan').values if len(data) == 0 else \
-                np.concatenate((data, F['CAT'].astype('|S').fillna('nan').values), axis=1)
+        data = F['CAT'].fillna('nan').astype('|S').fillna('nan')).values if len(data) == 0 else \
+                np.concatenate((data, F['CAT'].fillna('nan').astype('|S').fillna('nan').values), axis=1)
 
     if info['no_of_mvc_features'] > 0:
-        data = F['MV'].astype('|S').fillna('nan').values if len(data) == 0 else \
-                np.concatenate((data, F['MV'].astype('|S').fillna('nan').values), axis=1)
+        data = F['MV'].fillna('nan').astype('|S').fillna('nan').values if len(data) == 0 else \
+                np.concatenate((data, F['MV'].fillna('nan').astype('|S').fillna('nan').values), axis=1)
 
     print('data.shape: {}\n'.format(data.shape))
     return data
