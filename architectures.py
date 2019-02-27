@@ -21,7 +21,7 @@ class ADWIN_VFDT:
         print_data_info(info)
         print_time_info(info)
 
-        self._adwin = ADWIN()
+        # self._adwin = ADWIN()
         self._dataset_budget_threshold = 0.8
         self._cat_encoder = CountWoeCipher()
         self._mvc_encoder = CountWoeCipher()
