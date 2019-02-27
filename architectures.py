@@ -91,6 +91,6 @@ class ADWIN_VFDT:
             transformed_data = np.concatenate((transformed_data, mvc_data), axis=1)
 
         print('transformed_data.shape: {}'.format(transformed_data.shape))
-        predictions = self._classifier.predict(transformed_data)
+        predictions = np.array(self._classifier.predict(transformed_data))
         print('predictions.shape: {}\n'.format(predictions.shape))
         return predictions
