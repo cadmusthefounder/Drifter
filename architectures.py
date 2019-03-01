@@ -62,13 +62,18 @@ class ADWIN_VFDT:
         #     transformed_data = np.concatenate((transformed_data, mvc_data), axis=1)
 
         print('transformed_data.shape: {}'.format(transformed_data.shape))
-        self._classifier = self._classifier_class(list(range(transformed_data.shape[1])))
-        for i in range(len(transformed_data)):
-            print(i)
+        split = 0
+        if self._classifier is None:
+            split = int(len(transformed_data) / 10)
+            self._classifier = self._classifier_class(list(range(transformed_data.shape[1])))
+            for i in range(split):
+                current_data, current_label = transformed_data[i], y[i]
+                self._classifier.update(current_data, current_label)
+        for i in range(split, len(transformed_data)):
             current_data, current_label = transformed_data[i], y[i]
             prediction = self._classifier.predict(current_data)
+            print('prediction is: {} label is {}'.format(prediction, current_label))
             self._classifier.update(current_data, current_label)
-
 
     def predict(self, F, datainfo, timeinfo):
         print('\npredict')
