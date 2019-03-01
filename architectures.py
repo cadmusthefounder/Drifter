@@ -66,6 +66,7 @@ class ADWIN_VFDT:
         for i in range(len(transformed_data)):
             print(i)
             current_data, current_label = transformed_data[i], y[i]
+            prediction = self._classifier.predict(current_data)
             self._classifier.update(current_data, current_label)
 
 
