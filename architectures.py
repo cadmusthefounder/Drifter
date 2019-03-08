@@ -74,7 +74,7 @@ class ADWIN_VFDT:
         for i in range(split, len(transformed_data)):
             current_data, current_label = transformed_data[i], y[i]
             prediction = self._classifier.predict([current_data])
-            print('prediction is: {} label is {}'.format(prediction, current_label))
+            # print('prediction is: {} label is {}'.format(prediction, current_label))
             self._classifier.update(current_data, current_label)
 
     def predict(self, F, datainfo, timeinfo):
