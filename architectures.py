@@ -23,7 +23,7 @@ class ADWIN_VFDT:
 
         # self._adwin = ADWIN()
         self._dataset_budget_threshold = 0.8
-        self._cat_encoder = HashCipher(info['no_of_categorical_features'], 5)
+        self._cat_encoder = HashCipher(info['no_of_categorical_features'], 8)
         self._mvc_encoder = HashCipher(info['no_of_mvc_features'], 2)
         
         self._classifier = None
