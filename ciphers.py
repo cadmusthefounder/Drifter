@@ -4,7 +4,8 @@ import pandas as pd
 from utils import pip_install
 
 pip_install('category_encoders')
-from category_encoders.binary import BinaryEncoder, HashingEncoder
+from category_encoders.binary import BinaryEncoder
+from category_encoders.hashing import HashingEncoder
 
 class CountWoeCipher:
 
