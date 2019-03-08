@@ -339,3 +339,39 @@ class Vfdt:
             print(node.split_feature)
             self.print_tree(node.left_child)
             self.print_tree(node.right_child)
+
+class OOB:
+
+    def __init__(self, no_of_classifiers, classifier_class, features, theta=0.3):
+        self._no_of_classifiers = no_of_classifiers
+        self._classifiers = []
+        for i in range(self._no_of_classifiers):
+            self._classifiers.append(classifier_class(features))
+        self._w0 = 0
+        self._w1 = 0
+        self._theta = theta
+
+    def update(self, x, y):
+        val = 1 if y == 0 else 0
+        self._w0 = self._theta * self._w0 + (1 - self._theta) * val
+        val = 1 if y == 1 else 0
+        self._w1 = self._theta * self._w1 + (1 - self._theta) * val
+        
+        for i in range(self._no_of_classifiers):
+            if y == 1 and self._w1 < self._w0:
+                K = np.random.poisson(lam=self._w0/self._w1)
+            elif y == 0 and self._w0 < self._w1:
+                K = np.random.poisson(lam=self._w1/self._w0)
+            else:
+                K = np.random.poisson(lam=1)
+
+            for j in range(int(K))
+                self._classifiers[i].update(x, y)
+
+    def predict(self, x):
+        count = 0
+        for i in range(self._no_of_classifiers):
+            count += self._classifiers[i].predict(x)
+
+        return count / self._no_of_classifiers
+    

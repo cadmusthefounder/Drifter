@@ -10,8 +10,8 @@ from hyperopt import hp
 from hyperopt.pyll.base import scope
 from hyperparameters_tuner import HyperparametersTuner
 # from skmultiflow.drift_detection.adwin import ADWIN
-from ciphers import HashCipher
-from classifiers import Vfdt
+from ciphers import HashCipher, CountWoeCipher
+from classifiers import Vfdt, OOB
 
 class ADWIN_VFDT:
     NAME = 'ADWIN_VFDT'
@@ -23,11 +23,11 @@ class ADWIN_VFDT:
 
         # self._adwin = ADWIN()
         self._dataset_budget_threshold = 0.8
-        self._cat_encoder = HashCipher(info['no_of_categorical_features'], 8)
-        self._mvc_encoder = HashCipher(info['no_of_mvc_features'], 2)
+        self._cat_encoder = CountWoeCipher()
+        self._mvc_encoder = CountWoeCipher()
         
         self._classifier = None
-        self._classifier_class = Vfdt
+        self._classifier_class = OOB
         self._fixed_hyperparameters = {}
         self._search_space = {}
         self._best_hyperparameters = None
@@ -67,7 +67,7 @@ class ADWIN_VFDT:
         split = 0
         if self._classifier is None:
             split = int(len(transformed_data) / 10)
-            self._classifier = self._classifier_class(list(range(transformed_data.shape[1])))
+            self._classifier = self._classifier_class(10, Vfdt, list(range(transformed_data.shape[1])))
             for i in range(split):
                 current_data, current_label = transformed_data[i], y[i]
                 self._classifier.update(current_data, current_label)
