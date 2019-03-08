@@ -57,10 +57,10 @@ class ADWIN_VFDT:
             transformed_data = numerical_data if len(transformed_data) == 0 else \
                                 np.concatenate((transformed_data, numerical_data), axis=1)
         if len(categorical_data) > 0:
-            categorical_data = self._cat_encoder.encode(categorical_data)
+            categorical_data = self._cat_encoder.encode(categorical_data, incoming_labels=y)
             transformed_data = np.concatenate((transformed_data, categorical_data), axis=1)
         if len(mvc_data) > 0: 
-            mvc_data = self._mvc_encoder.encode(mvc_data)
+            mvc_data = self._mvc_encoder.encode(mvc_data, incoming_labels=y)
             transformed_data = np.concatenate((transformed_data, mvc_data), axis=1)
 
         print('transformed_data.shape: {}'.format(transformed_data.shape))

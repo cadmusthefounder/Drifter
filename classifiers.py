@@ -374,6 +374,5 @@ class OOB:
             result = np.add(result, self._classifiers[i].predict(x))
 
         result = np.true_divide(result, self._no_of_classifiers)
-        print('prediction: {}'.format(result))
         return result
     
