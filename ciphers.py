@@ -4,7 +4,7 @@ import pandas as pd
 from utils import pip_install
 
 pip_install('category_encoders')
-from category_encoders.binary import BinaryEncoder
+from category_encoders.binary import BinaryEncoder, HashingEncoder
 
 class CountWoeCipher:
 
@@ -66,6 +66,23 @@ class BinaryCipher:
 
         print('result.shape: {}\n'.format(result.shape)) 
         return result
+
+class HashCipher:
+
+    def __init__(self, no_of_cols, N):
+        self._cols = list(range(no_of_cols))
+        self._N = N
+
+    def encode(self, incoming_data):
+        print('\nencode')
+        print('incoming_data.shape: {}'.format(incoming_data.shape))
+
+        data = pd.DataFrame(incoming_data)
+        result = HashingEncoder.hashing_trick(data, N=self._N, cols=self._cols).values
+        print('result.shape: {}\n'.format(result.shape)) 
+        return result
+
+
 
 # def hash_encoding(categorical_or_mvc_data, labels=None, encoder=None):
 #     print('\nhash')

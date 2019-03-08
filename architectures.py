@@ -10,7 +10,7 @@ from hyperopt import hp
 from hyperopt.pyll.base import scope
 from hyperparameters_tuner import HyperparametersTuner
 # from skmultiflow.drift_detection.adwin import ADWIN
-from ciphers import CountWoeCipher
+from ciphers import HashCipher
 from classifiers import Vfdt
 
 class ADWIN_VFDT:
@@ -23,8 +23,8 @@ class ADWIN_VFDT:
 
         # self._adwin = ADWIN()
         self._dataset_budget_threshold = 0.8
-        self._cat_encoder = CountWoeCipher()
-        self._mvc_encoder = CountWoeCipher()
+        self._cat_encoder = HashCipher(info['no_of_categorical_features'], 3)
+        self._mvc_encoder = HashCipher(info['no_of_mvc_features'], 6)
         
         self._classifier = None
         self._classifier_class = Vfdt
@@ -56,10 +56,12 @@ class ADWIN_VFDT:
         if len(numerical_data) > 0:
             transformed_data = numerical_data if len(transformed_data) == 0 else \
                                 np.concatenate((transformed_data, numerical_data), axis=1)
-        # if len(categorical_data) > 0:
-        #     transformed_data = np.concatenate((transformed_data, categorical_data), axis=1)
-        # if len(mvc_data) > 0:
-        #     transformed_data = np.concatenate((transformed_data, mvc_data), axis=1)
+        if len(categorical_data) > 0:
+            categorical_data = self._cat_encoder.encode(categorical_data)
+            transformed_data = np.concatenate((transformed_data, categorical_data), axis=1)
+        if len(mvc_data) > 0: 
+            mvc_data = self._mvc_encoder.encode(mvc_data)
+            transformed_data = np.concatenate((transformed_data, mvc_data), axis=1)
 
         print('transformed_data.shape: {}'.format(transformed_data.shape))
         split = 0
