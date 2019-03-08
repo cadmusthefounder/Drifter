@@ -371,7 +371,9 @@ class OOB:
     def predict(self, x):
         count = 0
         for i in range(self._no_of_classifiers):
-            count += self._classifiers[i].predict(x)[0]
+            count += self._classifiers[i].predict([x])[0]
 
-        return count / self._no_of_classifiers
+        result = count / self._no_of_classifiers
+        print('prediction: {}'.format(result))
+        return result
     
