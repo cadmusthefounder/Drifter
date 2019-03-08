@@ -369,11 +369,11 @@ class OOB:
                 self._classifiers[i].update(x, y)
 
     def predict(self, x):
-        count = 0
+        result = np.zeros(len(x))
         for i in range(self._no_of_classifiers):
-            count += self._classifiers[i].predict([x])[0]
+            result = np.add(result, self._classifiers[i].predict(x))
 
-        result = count / self._no_of_classifiers
+        result = np.true_divide(result, self._no_of_classifiers)
         print('prediction: {}'.format(result))
         return result
     
