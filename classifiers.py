@@ -365,7 +365,7 @@ class OOB:
             else:
                 K = np.random.poisson(lam=1)
 
-            for j in range(int(K))
+            for j in range(int(K)):
                 self._classifiers[i].update(x, y)
 
     def predict(self, x):
